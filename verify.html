@@ -5,19 +5,14 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meatopia | Staff Verification</title>
+<title>Meatopia | Verify Ticket</title>
 
-<link
-  rel="stylesheet"
-  href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
-<!-- QR SCANNER LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 </head>
@@ -34,20 +29,13 @@
 MEATOPIA
 </div>
 
-
 <nav class="nav-links">
 
-<a href="index.html">
-Tickets
-</a>
+<a href="index.html">Tickets</a>
 
-<a href="verify.html">
-Verify
-</a>
+<a href="verify.html">Verify</a>
 
-<a href="admin.html">
-Admin
-</a>
+<a href="admin.html">Admin</a>
 
 </nav>
 
@@ -62,38 +50,25 @@ Admin
 <div class="container">
 
 
-<!-- ========================= -->
 <!-- LOGIN -->
-<!-- ========================= -->
 
-<section
-id="loginSection"
-class="card"
->
+<section id="loginSection" class="card">
 
-<h1>
-Staff Verification Login
-</h1>
+<h1>Staff Verification</h1>
 
-<p>
-Authorized staff only.
-</p>
+<p>Authorized staff only.</p>
 
 
 <form id="loginForm">
 
-
 <div class="form-group">
 
-<label for="email">
-Email
-</label>
+<label>Email</label>
 
 <input
 id="email"
 type="email"
 placeholder="Staff email"
-autocomplete="email"
 required
 >
 
@@ -102,15 +77,12 @@ required
 
 <div class="form-group">
 
-<label for="password">
-Password
-</label>
+<label>Password</label>
 
 <input
 id="password"
 type="password"
 placeholder="Password"
-autocomplete="current-password"
 required
 >
 
@@ -118,8 +90,8 @@ required
 
 
 <button
-type="submit"
 class="btn"
+type="submit"
 id="loginButton"
 >
 
@@ -127,22 +99,22 @@ Staff Login
 
 </button>
 
-
 </form>
 
 
-<p id="loginMessage"></p>
+<p
+id="loginMessage"
+style="margin-top:15px;"
+></p>
 
 </section>
 
 
 
-<!-- ========================= -->
-<!-- VERIFICATION AREA -->
-<!-- ========================= -->
+<!-- VERIFY -->
 
 <section
-id="verificationSection"
+id="verifySection"
 class="hidden"
 >
 
@@ -150,47 +122,31 @@ class="hidden"
 <section class="hero">
 
 <h1>
-TICKET VERIFICATION
+MEATOPIA
 </h1>
 
 <p>
-MEATOPIA
-</p>
-
-<p>
-30 September 2026
-</p>
-
-<p>
-Moshupa AOG
+STAFF TICKET VERIFICATION
 </p>
 
 </section>
 
 
 
-<!-- ========================= -->
-<!-- QR SCANNER -->
-<!-- ========================= -->
-
 <section class="card">
 
 <h2>
-📷 Scan Ticket QR Code
+📷 Scan QR Code
 </h2>
 
 <p>
-Point the camera at the QR code on the ticket.
+Scan the QR code printed on the ticket.
 </p>
 
 
 <div
 id="qr-reader"
-style="
-width:100%;
-max-width:500px;
-margin:20px auto;
-"
+style="width:100%;max-width:500px;margin:20px auto;"
 ></div>
 
 
@@ -200,7 +156,7 @@ class="btn"
 type="button"
 >
 
-Start QR Scanner
+Start Camera
 
 </button>
 
@@ -212,7 +168,7 @@ type="button"
 style="display:none;"
 >
 
-Stop Scanner
+Stop Camera
 
 </button>
 
@@ -223,36 +179,26 @@ Stop Scanner
 
 
 
-<!-- ========================= -->
-<!-- MANUAL VERIFICATION -->
-<!-- ========================= -->
-
 <section class="card">
 
 <h2>
 ⌨️ Enter Ticket ID
 </h2>
 
-<p>
-You can also enter the Ticket ID manually.
-</p>
 
-
-<form id="verifyForm">
+<form id="ticketForm">
 
 
 <div class="form-group">
 
-<label for="ticketId">
+<label>
 Ticket ID
 </label>
-
 
 <input
 id="ticketId"
 type="text"
 placeholder="MTP-XXXXXXXX"
-autocomplete="off"
 required
 >
 
@@ -260,15 +206,13 @@ required
 
 
 <button
-type="submit"
 class="btn"
-id="verifyButton"
+type="submit"
 >
 
 Verify Ticket
 
 </button>
-
 
 </form>
 
@@ -276,35 +220,11 @@ Verify Ticket
 
 
 
-<!-- ========================= -->
-<!-- RESULT -->
-<!-- ========================= -->
-
-<div
-id="verificationResult"
-style="margin-top:20px;"
-></div>
+<div id="result"></div>
 
 
-
-<!-- ========================= -->
-<!-- LOGOUT -->
-<!-- ========================= -->
 
 <section class="card">
-
-<a
-href="admin.html"
-class="btn"
->
-
-Admin Dashboard
-
-</a>
-
-
-<br><br>
-
 
 <button
 id="logoutButton"
@@ -344,9 +264,8 @@ Logout
 
 <script>
 
-/* ================================================= */
+
 /* SUPABASE */
-/* ================================================= */
 
 const SUPABASE_URL =
 "https://kqvekxywsyjuhjggwrpa.supabase.co";
@@ -356,7 +275,7 @@ const SUPABASE_KEY =
 "sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
 
 
-const supabaseClient =
+const db =
 window.supabase.createClient(
 
 SUPABASE_URL,
@@ -371,8 +290,6 @@ persistSession: true,
 
 autoRefreshToken: true,
 
-detectSessionInUrl: true,
-
 storage: window.localStorage
 
 }
@@ -383,92 +300,52 @@ storage: window.localStorage
 
 
 
-/* ================================================= */
 /* ELEMENTS */
-/* ================================================= */
 
 const loginSection =
 document.getElementById(
 "loginSection"
 );
 
-
-const verificationSection =
+const verifySection =
 document.getElementById(
-"verificationSection"
+"verifySection"
 );
-
-
-const loginForm =
-document.getElementById(
-"loginForm"
-);
-
 
 const loginMessage =
 document.getElementById(
 "loginMessage"
 );
 
-
-const verificationResult =
+const loginButton =
 document.getElementById(
-"verificationResult"
+"loginButton"
 );
 
-
-const ticketIdInput =
+const result =
 document.getElementById(
-"ticketId"
-);
-
-
-const scannerMessage =
-document.getElementById(
-"scannerMessage"
-);
-
-
-const startScannerButton =
-document.getElementById(
-"startScanner"
-);
-
-
-const stopScannerButton =
-document.getElementById(
-"stopScanner"
+"result"
 );
 
 
 
-/* ================================================= */
-/* SESSION */
-/* ================================================= */
+/* SHOW VERIFY */
 
-async function checkSession() {
+function showVerify() {
 
-const {
-data
-} =
-await supabaseClient.auth.getSession();
+loginSection.classList.add(
+"hidden"
+);
 
-
-if (data.session) {
-
-showVerification();
-
-}
-
-else {
-
-showLogin();
-
-}
+verifySection.classList.remove(
+"hidden"
+);
 
 }
 
 
+
+/* SHOW LOGIN */
 
 function showLogin() {
 
@@ -476,7 +353,7 @@ loginSection.classList.remove(
 "hidden"
 );
 
-verificationSection.classList.add(
+verifySection.classList.add(
 "hidden"
 );
 
@@ -484,66 +361,89 @@ verificationSection.classList.add(
 
 
 
-function showVerification() {
+/* CHECK LOGIN */
 
-loginSection.classList.add(
-"hidden"
-);
-
-verificationSection.classList.remove(
-"hidden"
-);
-
-}
-
-
-
-/* ================================================= */
-/* LOGIN */
-/* ================================================= */
-
-loginForm.addEventListener(
-
-"submit",
-
-async function(event) {
-
-event.preventDefault();
-
-
-const email =
-document
-.getElementById("email")
-.value
-.trim();
-
-
-const password =
-document
-.getElementById("password")
-.value;
-
-
-const button =
-document.getElementById(
-"loginButton"
-);
-
-
-button.disabled = true;
-
-button.textContent =
-"Logging in...";
-
+async function checkLogin() {
 
 loginMessage.textContent =
-"";
+"Checking login...";
 
 
 const {
+data,
 error
 } =
-await supabaseClient.auth.signInWithPassword({
+await db.auth.getSession();
+
+
+if (error) {
+
+loginMessage.textContent =
+"Session error: " +
+error.message;
+
+return;
+
+}
+
+
+if (data.session) {
+
+showVerify();
+
+}
+
+else {
+
+loginMessage.textContent =
+"Please log in.";
+
+}
+
+}
+
+
+
+/* LOGIN */
+
+document
+.getElementById(
+"loginForm"
+)
+.addEventListener(
+
+"submit",
+
+async function(e) {
+
+e.preventDefault();
+
+
+loginMessage.textContent =
+"Logging in...";
+
+
+loginButton.disabled =
+true;
+
+
+const email =
+document.getElementById(
+"email"
+).value.trim();
+
+
+const password =
+document.getElementById(
+"password"
+).value;
+
+
+const {
+data,
+error
+} =
+await db.auth.signInWithPassword({
 
 email: email,
 
@@ -555,19 +455,35 @@ password: password
 if (error) {
 
 loginMessage.textContent =
+"Login error: " +
 error.message;
 
-button.disabled = false;
-
-button.textContent =
-"Staff Login";
+loginButton.disabled =
+false;
 
 return;
 
 }
 
 
-showVerification();
+if (!data.session) {
+
+loginMessage.textContent =
+"Login succeeded but no session was created.";
+
+loginButton.disabled =
+false;
+
+return;
+
+}
+
+
+loginMessage.textContent =
+"Login successful!";
+
+
+showVerify();
 
 }
 
@@ -575,64 +491,26 @@ showVerification();
 
 
 
-/* ================================================= */
 /* VERIFY TICKET */
-/* ================================================= */
 
-async function verifyTicket(
-ticketId
-) {
+async function verifyTicket(id) {
 
 
-ticketId =
-String(ticketId)
+id =
+String(id)
 .trim()
 .toUpperCase();
 
 
-if (!ticketId) {
-
-return;
-
-}
-
-
-ticketIdInput.value =
-ticketId;
-
-
-const verifyButton =
-document.getElementById(
-"verifyButton"
-);
-
-
-verifyButton.disabled =
-true;
-
-verifyButton.textContent =
-"Checking...";
-
-
-verificationResult.innerHTML = `
-
-<div class="card">
-
-<p>
-Checking ticket...
-</p>
-
-</div>
-
-`;
-
+result.innerHTML =
+"<div class='card'><p>Checking ticket...</p></div>";
 
 
 const {
 data,
 error
 } =
-await supabaseClient
+await db
 
 .from("Tickets.aog")
 
@@ -640,22 +518,19 @@ await supabaseClient
 
 .eq(
 "ticket_id",
-ticketId
+id
 )
 
 .maybeSingle();
 
 
-
 if (error) {
 
-verificationResult.innerHTML = `
+result.innerHTML = `
 
 <div class="card">
 
-<h2>
-❌ VERIFICATION ERROR
-</h2>
+<h2>❌ ERROR</h2>
 
 <p>
 ${escapeHtml(error.message)}
@@ -665,45 +540,64 @@ ${escapeHtml(error.message)}
 
 `;
 
-verifyButton.disabled =
-false;
-
-verifyButton.textContent =
-"Verify Ticket";
-
 return;
 
 }
 
 
-
 if (!data) {
 
-verificationResult.innerHTML = `
+result.innerHTML = `
 
 <div class="card">
 
-<h2>
-❌ TICKET NOT FOUND
-</h2>
+<h2>❌ TICKET NOT FOUND</h2>
 
 <p>
 Ticket ID:
+<strong>${escapeHtml(id)}</strong>
 </p>
-
-<strong>
-${escapeHtml(ticketId)}
-</strong>
 
 </div>
 
 `;
 
-verifyButton.disabled =
-false;
+return;
 
-verifyButton.textContent =
-"Verify Ticket";
+}
+
+
+const status =
+String(data.status)
+.toLowerCase();
+
+
+
+if (status === "pending") {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>🟡 PAYMENT PENDING</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+${escapeHtml(data.ticket_id)}
+</p>
+
+<p>
+<strong>DO NOT ALLOW ENTRY</strong>
+</p>
+
+</div>
+
+`;
 
 return;
 
@@ -711,26 +605,382 @@ return;
 
 
 
-const status =
-String(
-data.status || ""
-)
-.toLowerCase();
+if (status === "used") {
 
-
-
-/* ================================================= */
-/* PENDING */
-/* ================================================= */
-
-if (
-status === "pending"
-) {
-
-verificationResult.innerHTML = `
+result.innerHTML = `
 
 <div class="card">
 
-<h2>
-🟡 PAYMENT PENDING
-</
+<h2>🔴 TICKET ALREADY USED</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+${escapeHtml(data.ticket_id)}
+</p>
+
+<p>
+<strong>DO NOT ALLOW ENTRY</strong>
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+if (status === "valid") {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>🟢 VALID TICKET</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(data.ticket_id)}</strong>
+</p>
+
+<p>
+Ticket Type:
+${escapeHtml(data.ticket_type)}
+</p>
+
+<p>
+Price:
+P${escapeHtml(data.price)}
+</p>
+
+<p>
+Event:
+Meatopia
+</p>
+
+<p>
+30 September 2026
+</p>
+
+<p>
+Moshupa AOG
+</p>
+
+<button
+id="useButton"
+class="btn"
+type="button"
+>
+
+MARK AS USED
+
+</button>
+
+</div>
+
+`;
+
+
+document
+.getElementById(
+"useButton"
+)
+.onclick = async function() {
+
+
+const confirmed =
+confirm(
+"Mark this ticket as USED?"
+);
+
+
+if (!confirmed) return;
+
+
+const {
+error
+} =
+await db
+
+.from("Tickets.aog")
+
+.update({
+status: "used"
+})
+
+.eq(
+"ticket_id",
+data.ticket_id
+);
+
+
+if (error) {
+
+alert(
+error.message
+);
+
+return;
+
+}
+
+
+verifyTicket(
+data.ticket_id
+);
+
+};
+
+
+return;
+
+}
+
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>⚠️ UNKNOWN STATUS</h2>
+
+<p>
+${escapeHtml(data.status)}
+</p>
+
+</div>
+
+`;
+
+}
+
+
+
+/* MANUAL */
+
+document
+.getElementById(
+"ticketForm"
+)
+.addEventListener(
+
+"submit",
+
+function(e) {
+
+e.preventDefault();
+
+
+verifyTicket(
+
+document.getElementById(
+"ticketId"
+).value
+
+);
+
+}
+
+);
+
+
+
+/* QR */
+
+let scanner = null;
+
+
+document
+.getElementById(
+"startScanner"
+)
+.onclick = async function() {
+
+
+if (scanner) return;
+
+
+scanner =
+new Html5Qrcode(
+"qr-reader"
+);
+
+
+try {
+
+
+await scanner.start(
+
+{
+facingMode: "environment"
+},
+
+{
+fps: 10,
+qrbox: 250
+},
+
+function(text) {
+
+
+document.getElementById(
+"ticketId"
+).value =
+text;
+
+
+verifyTicket(text);
+
+}
+
+);
+
+
+document.getElementById(
+"startScanner"
+).style.display =
+"none";
+
+
+document.getElementById(
+"stopScanner"
+).style.display =
+"inline-block";
+
+
+document.getElementById(
+"scannerMessage"
+).textContent =
+"Camera active. Scan the QR code.";
+
+}
+
+catch(error) {
+
+document.getElementById(
+"scannerMessage"
+).textContent =
+"Camera error: " +
+error;
+
+}
+
+};
+
+
+
+/* STOP QR */
+
+document
+.getElementById(
+"stopScanner"
+)
+.onclick = async function() {
+
+
+if (!scanner) return;
+
+
+await scanner.stop();
+
+
+scanner.clear();
+
+
+scanner = null;
+
+
+document.getElementById(
+"startScanner"
+).style.display =
+"inline-block";
+
+
+document.getElementById(
+"stopScanner"
+).style.display =
+"none";
+
+};
+
+
+
+/* LOGOUT */
+
+document
+.getElementById(
+"logoutButton"
+)
+.onclick = async function() {
+
+
+if (scanner) {
+
+try {
+
+await scanner.stop();
+
+scanner.clear();
+
+}
+catch(e) {}
+
+}
+
+
+await db.auth.signOut();
+
+
+showLogin();
+
+
+loginMessage.textContent =
+"Logged out.";
+
+};
+
+
+
+/* ESCAPE */
+
+function escapeHtml(value) {
+
+return String(value ?? "")
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+
+
+/* START */
+
+checkLogin();
+
+
+</script>
+
+
+</body>
+
+</html>
