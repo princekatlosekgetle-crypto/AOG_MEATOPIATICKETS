@@ -5,15 +5,15 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meatopia | Ticket Verification</title>
+<title>Meatopia | Verify Ticket</title>
 
 <link rel="stylesheet" href="style.css">
 
-<!-- QR READER -->
-<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 </head>
 
@@ -54,22 +54,16 @@ MEATOPIA
 
 <section id="loginSection" class="card">
 
-<h1>
-Staff Verification
-</h1>
+<h1>Staff Verification</h1>
 
-<p>
-Authorized staff only.
-</p>
+<p>Authorized staff only.</p>
 
 
 <form id="loginForm">
 
 <div class="form-group">
 
-<label>
-Email
-</label>
+<label>Email</label>
 
 <input
 id="email"
@@ -83,9 +77,7 @@ required
 
 <div class="form-group">
 
-<label>
-Password
-</label>
+<label>Password</label>
 
 <input
 id="password"
@@ -98,26 +90,28 @@ required
 
 
 <button
-id="loginButton"
 class="btn"
 type="submit"
+id="loginButton"
 >
 
 Staff Login
 
 </button>
 
-
 </form>
 
 
-<p id="loginMessage"></p>
+<p
+id="loginMessage"
+style="margin-top:15px;"
+></p>
 
 </section>
 
 
 
-<!-- VERIFICATION -->
+<!-- VERIFY -->
 
 <section
 id="verifySection"
@@ -135,5 +129,858 @@ MEATOPIA
 STAFF TICKET VERIFICATION
 </p>
 
+</section>
+
+
+
+<section class="card">
+
+<h2>
+📷 Scan QR Code
+</h2>
+
 <p>
-30 September 2026 • Mosh
+Scan the QR code printed on the ticket.
+</p>
+
+
+<div
+id="qr-reader"
+style="width:100%;max-width:500px;margin:20px auto;"
+></div>
+
+
+<button
+id="startScanner"
+class="btn"
+type="button"
+>
+
+Start Camera
+
+</button>
+
+
+<button
+id="stopScanner"
+class="btn"
+type="button"
+style="display:none;"
+>
+
+Stop Camera
+
+</button>
+
+
+<p id="scannerMessage"></p>
+
+</section>
+
+
+
+<section class="card">
+
+<h2>
+⌨️ Enter Ticket ID
+</h2>
+
+
+<form id="ticketForm">
+
+
+<div class="form-group">
+
+<label>
+Ticket ID
+</label>
+
+<input
+id="ticketId"
+type="text"
+placeholder="MTP-XXXXXXXX"
+required
+>
+
+</div>
+
+
+<button
+class="btn"
+type="submit"
+>
+
+Verify Ticket
+
+</button>
+
+</form>
+
+</section>
+
+
+
+<div id="result"></div>
+
+
+
+<section class="card">
+
+<button
+id="logoutButton"
+class="btn"
+type="button"
+>
+
+Logout
+
+</button>
+
+</section>
+
+
+</section>
+
+
+</div>
+
+</main>
+
+
+
+<footer>
+
+<div class="container">
+
+<p>
+© 2026 Meatopia
+</p>
+
+</div>
+
+</footer>
+
+
+
+<script>
+
+
+/* SUPABASE */
+
+const SUPABASE_URL =
+"https://kqvekxywsyjuhjggwrpa.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+
+
+const db =
+window.supabase.createClient(
+
+SUPABASE_URL,
+
+SUPABASE_KEY,
+
+{
+
+auth: {
+
+persistSession: true,
+
+autoRefreshToken: true,
+
+storage: window.localStorage
+
+}
+
+}
+
+);
+
+
+
+/* ELEMENTS */
+
+const loginSection =
+document.getElementById(
+"loginSection"
+);
+
+const verifySection =
+document.getElementById(
+"verifySection"
+);
+
+const loginMessage =
+document.getElementById(
+"loginMessage"
+);
+
+const loginButton =
+document.getElementById(
+"loginButton"
+);
+
+const result =
+document.getElementById(
+"result"
+);
+
+
+
+/* SHOW VERIFY */
+
+function showVerify() {
+
+loginSection.classList.add(
+"hidden"
+);
+
+verifySection.classList.remove(
+"hidden"
+);
+
+}
+
+
+
+/* SHOW LOGIN */
+
+function showLogin() {
+
+loginSection.classList.remove(
+"hidden"
+);
+
+verifySection.classList.add(
+"hidden"
+);
+
+}
+
+
+
+/* CHECK LOGIN */
+
+async function checkLogin() {
+
+loginMessage.textContent =
+"Checking login...";
+
+
+const {
+data,
+error
+} =
+await db.auth.getSession();
+
+
+if (error) {
+
+loginMessage.textContent =
+"Session error: " +
+error.message;
+
+return;
+
+}
+
+
+if (data.session) {
+
+showVerify();
+
+}
+
+else {
+
+loginMessage.textContent =
+"Please log in.";
+
+}
+
+}
+
+
+
+/* LOGIN */
+
+document
+.getElementById(
+"loginForm"
+)
+.addEventListener(
+
+"submit",
+
+async function(e) {
+
+e.preventDefault();
+
+
+loginMessage.textContent =
+"Logging in...";
+
+
+loginButton.disabled =
+true;
+
+
+const email =
+document.getElementById(
+"email"
+).value.trim();
+
+
+const password =
+document.getElementById(
+"password"
+).value;
+
+
+const {
+data,
+error
+} =
+await db.auth.signInWithPassword({
+
+email: email,
+
+password: password
+
+});
+
+
+if (error) {
+
+loginMessage.textContent =
+"Login error: " +
+error.message;
+
+loginButton.disabled =
+false;
+
+return;
+
+}
+
+
+if (!data.session) {
+
+loginMessage.textContent =
+"Login succeeded but no session was created.";
+
+loginButton.disabled =
+false;
+
+return;
+
+}
+
+
+loginMessage.textContent =
+"Login successful!";
+
+
+showVerify();
+
+}
+
+);
+
+
+
+/* VERIFY TICKET */
+
+async function verifyTicket(id) {
+
+
+id =
+String(id)
+.trim()
+.toUpperCase();
+
+
+result.innerHTML =
+"<div class='card'><p>Checking ticket...</p></div>";
+
+
+const {
+data,
+error
+} =
+await db
+
+.from("Tickets.aog")
+
+.select("*")
+
+.eq(
+"ticket_id",
+id
+)
+
+.maybeSingle();
+
+
+if (error) {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>❌ ERROR</h2>
+
+<p>
+${escapeHtml(error.message)}
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+if (!data) {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>❌ TICKET NOT FOUND</h2>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(id)}</strong>
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const status =
+String(data.status)
+.toLowerCase();
+
+
+
+if (status === "pending") {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>🟡 PAYMENT PENDING</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+${escapeHtml(data.ticket_id)}
+</p>
+
+<p>
+<strong>DO NOT ALLOW ENTRY</strong>
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+if (status === "used") {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>🔴 TICKET ALREADY USED</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+${escapeHtml(data.ticket_id)}
+</p>
+
+<p>
+<strong>DO NOT ALLOW ENTRY</strong>
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+if (status === "valid") {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>🟢 VALID TICKET</h2>
+
+<p>
+Holder:
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(data.ticket_id)}</strong>
+</p>
+
+<p>
+Ticket Type:
+${escapeHtml(data.ticket_type)}
+</p>
+
+<p>
+Price:
+P${escapeHtml(data.price)}
+</p>
+
+<p>
+Event:
+Meatopia
+</p>
+
+<p>
+30 September 2026
+</p>
+
+<p>
+Moshupa AOG
+</p>
+
+<button
+id="useButton"
+class="btn"
+type="button"
+>
+
+MARK AS USED
+
+</button>
+
+</div>
+
+`;
+
+
+document
+.getElementById(
+"useButton"
+)
+.onclick = async function() {
+
+
+const confirmed =
+confirm(
+"Mark this ticket as USED?"
+);
+
+
+if (!confirmed) return;
+
+
+const {
+error
+} =
+await db
+
+.from("Tickets.aog")
+
+.update({
+status: "used"
+})
+
+.eq(
+"ticket_id",
+data.ticket_id
+);
+
+
+if (error) {
+
+alert(
+error.message
+);
+
+return;
+
+}
+
+
+verifyTicket(
+data.ticket_id
+);
+
+};
+
+
+return;
+
+}
+
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>⚠️ UNKNOWN STATUS</h2>
+
+<p>
+${escapeHtml(data.status)}
+</p>
+
+</div>
+
+`;
+
+}
+
+
+
+/* MANUAL */
+
+document
+.getElementById(
+"ticketForm"
+)
+.addEventListener(
+
+"submit",
+
+function(e) {
+
+e.preventDefault();
+
+
+verifyTicket(
+
+document.getElementById(
+"ticketId"
+).value
+
+);
+
+}
+
+);
+
+
+
+/* QR */
+
+let scanner = null;
+
+
+document
+.getElementById(
+"startScanner"
+)
+.onclick = async function() {
+
+
+if (scanner) return;
+
+
+scanner =
+new Html5Qrcode(
+"qr-reader"
+);
+
+
+try {
+
+
+await scanner.start(
+
+{
+facingMode: "environment"
+},
+
+{
+fps: 10,
+qrbox: 250
+},
+
+function(text) {
+
+
+document.getElementById(
+"ticketId"
+).value =
+text;
+
+
+verifyTicket(text);
+
+}
+
+);
+
+
+document.getElementById(
+"startScanner"
+).style.display =
+"none";
+
+
+document.getElementById(
+"stopScanner"
+).style.display =
+"inline-block";
+
+
+document.getElementById(
+"scannerMessage"
+).textContent =
+"Camera active. Scan the QR code.";
+
+}
+
+catch(error) {
+
+document.getElementById(
+"scannerMessage"
+).textContent =
+"Camera error: " +
+error;
+
+}
+
+};
+
+
+
+/* STOP QR */
+
+document
+.getElementById(
+"stopScanner"
+)
+.onclick = async function() {
+
+
+if (!scanner) return;
+
+
+await scanner.stop();
+
+
+scanner.clear();
+
+
+scanner = null;
+
+
+document.getElementById(
+"startScanner"
+).style.display =
+"inline-block";
+
+
+document.getElementById(
+"stopScanner"
+).style.display =
+"none";
+
+};
+
+
+
+/* LOGOUT */
+
+document
+.getElementById(
+"logoutButton"
+)
+.onclick = async function() {
+
+
+if (scanner) {
+
+try {
+
+await scanner.stop();
+
+scanner.clear();
+
+}
+catch(e) {}
+
+}
+
+
+await db.auth.signOut();
+
+
+showLogin();
+
+
+loginMessage.textContent =
+"Logged out.";
+
+};
+
+
+
+/* ESCAPE */
+
+function escapeHtml(value) {
+
+return String(value ?? "")
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+
+
+/* START */
+
+checkLogin();
+
+
+</script>
+
+
+</body>
+
+</html>
