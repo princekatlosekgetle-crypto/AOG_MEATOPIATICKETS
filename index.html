@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meatopia Online Tickets</title>
+<style>
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#111;color:#fff;margin:0;padding:20px}
+.wrap{max-width:700px;margin:auto}.hero{text-align:center;padding:28px 10px}.hero h1{font-size:46px;letter-spacing:4px;margin:0}
+.card{background:#202020;padding:20px;border-radius:16px;margin:14px 0}.price{font-size:25px;font-weight:bold}
+button{width:100%;padding:14px;margin-top:12px;border:0;border-radius:10px;font-weight:bold;cursor:pointer}
+.buy{background:#fff;color:#111}.submit{background:#19c463;color:#fff}
+input,select{width:100%;padding:13px;margin:6px 0 12px;border-radius:8px;border:1px solid #555;background:#111;color:#fff}
+.pay{background:#151515;padding:14px;border-radius:10px;margin:8px 0 15px}
+#form,#result{display:none}.notice{background:#292929;padding:13px;border-radius:10px;font-size:14px}
+.success{color:#19c463}.ticket{border:1px solid #555;border-radius:12px;padding:18px;margin-top:15px}
+a{color:#fff;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero"><h1>MEATOPIA</h1><p>30 September 2026 • Moshupa AOG</p><p>Official Online Tickets • BWP</p></div>
+
+<div class="card"><h2>Early Bird</h2><div class="price">P80</div><p>50 tickets</p><button class="buy" onclick="buy('Early Bird',80)">BUY</button></div>
+<div class="card"><h2>Standard</h2><div class="price">P100</div><p>150 tickets</p><button class="buy" onclick="buy('Standard',100)">BUY</button></div>
+<div class="card"><h2>Children &gt;15</h2><div class="price">P50</div><p>50 tickets</p><button class="buy" onclick="buy('Children >15',50)">BUY</button></div>
+<div class="card"><h2>Group</h2><div class="price">P500</div><p>20 tickets</p><button class="buy" onclick="buy('Group',500)">BUY</button></div>
+
+<div id="form" class="card">
+<h2>Your Order</h2><p id="chosen"></p>
+<label>Full name</label><input id="name" autocomplete="name">
+<label>WhatsApp number</label><input id="phone" type="tel" autocomplete="tel">
+<label>Email</label><input id="email" type="email" autocomplete="email">
+<label>Payment method</label>
+<select id="method" onchange="showPayment()"><option value="">Choose</option><option value="FNB PayToCell">FNB PayToCell</option><option value="Orange Money">Orange Money</option></select>
+<div class="pay" id="payment">Select a payment method.</div>
+<label>Transaction/reference number</label><input id="ref">
+<div class="notice">Send the exact ticket amount, then enter your payment reference. Your order will remain pending until payment is checked.</div>
+<button class="submit" onclick="submitOrder()">SUBMIT PAYMENT</button>
+</div>
+
+<div id="result" class="card">
+<h2 class="success">Payment Submitted ✓</h2>
+<div class="ticket"><p>Order number:</p><strong id="orderId"></strong><p>Status: <strong>Pending Verification</strong></p></div>
+<p>Your e-ticket will be issued after the payment is approved.</p>
+</div>
+</div>
+
+<script>
+const API_URL=""; // Add your Google Apps Script Web App URL here later.
+let ticketType="",ticketPrice=0;
+
+function buy(t,p){
+ ticketType=t;ticketPrice=p;
+ document.getElementById("form").style.display="block";
+ document.getElementById("chosen").innerHTML="<b>"+t+"</b> — P"+p+" BWP";
+ document.getElementById("form").scrollIntoView({behavior:"smooth"});
+}
+function showPayment(){
+ const m=document.getElementById("method").value;
+ const p=document.getElementById("payment");
+ if(m==="FNB PayToCell") p.innerHTML="<b>FNB PayToCell</b><br>75584236<br>Nonofo Tlhobogang<br><br>Pay P"+ticketPrice+" BWP.";
+ else if(m==="Orange Money") p.innerHTML="<b>Orange Money</b><br>77321439<br>Botho Mosigi<br><br>Pay P"+ticketPrice+" BWP.";
+ else p.textContent="Select a payment method.";
+}
+function submitOrder(){
+ const name=document.getElementById("name").value.trim(), phone=document.getElementById("phone").value.trim(),
+ email=document.getElementById("email").value.trim(), method=document.getElementById("method").value,
+ ref=document.getElementById("ref").value.trim();
+ if(!name||!phone||!email||!method||!ref){alert("Please complete all fields.");return;}
+ const order={
+  orderId:"MEAT-"+Date.now(),name,phone,email,ticket:ticketType,amount:ticketPrice,
+  method,reference:ref,date:new Date().toISOString(),status:"Pending",ticketNumber:""
+ };
+ const orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]");
+ orders.push(order); localStorage.setItem("meatopia_orders",JSON.stringify(orders));
+ if(API_URL){
+  fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(order)})
+  .catch(()=>{});
+ }
+ document.getElementById("form").style.display="none";
+ document.getElementById("result").style.display="block";
+ document.getElementById("orderId").textContent=order.orderId;
+ document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+</script>
+</body>
+</html>
