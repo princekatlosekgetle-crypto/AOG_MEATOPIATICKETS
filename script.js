@@ -1,4 +1,4 @@
-/* =====================================================
+alert("MEATOPIA SCRIPT LOADED");/* =====================================================
    MEATOPIA ONLINE TICKET SYSTEM
    Ticket types, prices and quantity limits
    ===================================================== */
