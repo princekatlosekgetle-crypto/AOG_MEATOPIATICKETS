@@ -1,47 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meatopia Ticket Verification</title>
-<style>
-*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#111;color:#fff;margin:0;padding:20px}
-.wrap{max-width:650px;margin:auto}.hero{text-align:center;padding:25px}.hero h1{letter-spacing:4px}
-.card{background:#202020;border-radius:16px;padding:20px;margin:15px 0}input,button{width:100%;padding:14px;border-radius:10px;border:0;margin-top:10px}
-button{background:#fff;color:#111;font-weight:bold;cursor:pointer}.result{display:none;border-radius:12px;padding:20px;margin-top:15px}
-.valid{background:#155d32}.invalid{background:#6b1b1b}.used{background:#735800}
-</style>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Meatopia | Staff Verification</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
+
 <body>
-<div class="wrap">
-<div class="hero"><h1>MEATOPIA</h1><p>Ticket Verification</p></div>
-<div class="card">
-<h2>Verify Ticket</h2>
-<p>Enter the ticket number or QR data.</p>
-<input id="code" placeholder="e.g. MT-12345678">
-<button onclick="verify()">VERIFY TICKET</button>
-<div id="result" class="result"></div>
-</div>
-</div>
-<script>
-const API_URL=""; // Add your Google Apps Script Web App URL here later.
-function verify(){
- const code=document.getElementById("code").value.trim(),box=document.getElementById("result");
- if(!code){alert("Enter a ticket number.");return;}
- let orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]");
- let o=orders.find(x=>x.ticketNumber===code || x.qrData===code || String(x.qrData||"").includes(code));
- if(!o){box.className="result invalid";box.style.display="block";box.innerHTML="<h2>INVALID TICKET ✕</h2><p>This ticket was not found.</p>";return;}
- if(o.status!=="Approved"){box.className="result invalid";box.style.display="block";box.innerHTML="<h2>NOT APPROVED ✕</h2><p>This ticket has not been approved.</p>";return;}
- if(o.used){box.className="result used";box.style.display="block";box.innerHTML="<h2>ALREADY USED ⚠️</h2><p>This ticket has already been scanned.</p>";return;}
- box.className="result valid";box.style.display="block";
- box.innerHTML=`<h2>VALID TICKET ✓</h2><p><b>Name:</b> ${escapeHtml(o.name)}</p><p><b>Ticket:</b> ${escapeHtml(o.ticket)}</p><p><b>Ticket No:</b> ${escapeHtml(o.ticketNumber)}</p><button onclick="useTicket('${o.ticketNumber}')">MARK AS USED</button>`;
-}
-function useTicket(n){
- let orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]"),o=orders.find(x=>x.ticketNumber===n);
- if(!o)return;o.used=true;o.usedAt=new Date().toISOString();localStorage.setItem("meatopia_orders",JSON.stringify(orders));
- document.getElementById("result").className="result used";document.getElementById("result").innerHTML="<h2>TICKET MARKED USED ✓</h2><p>Entry has been recorded.</p>";
-}
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
-</script>
+
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="container nav">
+
+      <div class="logo">
+        MEATOPIA
+      </div>
+
+
+      <nav class="nav-links">
+
+        <a href="index.html">
+          Tickets
+        </a>
+
+        <a href="verify.html">
+          Verify
+        </a>
+
+        <a href="admin.html">
+          Admin
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- MAIN -->
+
+  <main>
+
+    <div class="container">
+
+
+      <!-- STAFF LOGIN -->
+
+      <section
+        id="staffLogin"
+        class="card"
+      >
+
+        <h1>
+          Staff Verification
+        </h1>
+
+        <p>
+          Authorized staff only.
+        </p>
+
+
+        <form id="staffLoginForm">
+
+
+          <div class="form-group">
+
+            <label for="staffCode">
+              Staff Access Code
+            </label>
+
+
+            <input
+              type="password"
+              id="staffCode"
+              placeholder="Enter staff code"
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="btn"
+          >
+            Enter Verification
+          </button>
+
+
+        </form>
+
+
+        <p
+          id="loginMessage"
+          class="error-message"
+        ></p>
+
+      </section>
+
+
+
+      <!-- VERIFICATION AREA -->
+
+      <section
+        id="verificationArea"
+        class="card hidden"
+      >
+
+        <h1>
+          Verify Ticket
+        </h1>
+
+        <p>
+          Enter the unique Ticket ID.
+        </p>
+
+
+        <form id="verifyForm">
+
+
+          <div class="form-group">
+
+            <label for="ticketIdInput">
+              Ticket ID
+            </label>
+
+
+            <input
+              type="text"
+              id="ticketIdInput"
+              placeholder="Example: MTP-ABCD1234"
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="btn"
+          >
+            Verify Ticket
+          </button>
+
+
+        </form>
+
+
+
+        <!-- RESULT -->
+
+        <div
+          id="verificationResult"
+          class="verification-result hidden"
+        >
+
+          <h2
+            id="verificationStatus"
+          ></h2>
+
+
+          <div id="verificationDetails">
+
+          </div>
+
+        </div>
+
+
+      </section>
+
+
+    </div>
+
+  </main>
+
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="container">
+
+      <p>
+        © 2026 Meatopia
+      </p>
+
+    </div>
+
+  </footer>
+
+
+
+  <script src="script.js"></script>
+
 </body>
+
 </html>
