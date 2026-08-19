@@ -2,226 +2,237 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <title>Meatopia Online Tickets</title>
 
-  <title>Meatopia Online Ticket</title>
-
-  <!-- Our stylesheet -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- QR Code Library -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="container nav">
+<header>
+  <div class="container nav">
 
-      <div class="logo">
-        MEATOPIA
-      </div>
+    <div class="logo">
+      MEATOPIA
+    </div>
 
-      <nav class="nav-links">
-        <a href="index.html">Ticket</a>
-        <a href="verify.html">Verify Ticket</a>
-        <a href="admin.html">Admin</a>
-      </nav>
+    <nav class="nav-links">
+      <a href="index.html">Tickets</a>
+      <a href="verify.html">Verify</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main>
+
+  <div class="container">
+
+    <section class="hero">
+      <h1>MEATOPIA</h1>
+
+      <p>
+        Official online tickets
+      </p>
+
+      <p>
+        30 September 2026 • Moshupa AOG
+      </p>
+    </section>
+
+
+    <div class="card">
+
+      <h2>Get Your Ticket</h2>
+
+      <form id="ticketForm">
+
+        <div class="form-group">
+
+          <label for="customerName">
+            Full Name
+          </label>
+
+          <input
+            type="text"
+            id="customerName"
+            placeholder="Enter ticket holder's name"
+            required
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="ticketTypeInput">
+            Ticket Type
+          </label>
+
+          <select id="ticketTypeInput" required>
+
+            <option value="">
+              Select a ticket
+            </option>
+
+            <option value="Early Bird">
+              Early Bird — P80
+            </option>
+
+            <option value="Standard">
+              Standard — P100
+            </option>
+
+            <option value="Children">
+              Children — P50
+            </option>
+
+            <option value="Group">
+              Group — P500
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn"
+        >
+          Generate Ticket
+        </button>
+
+      </form>
 
     </div>
-  </header>
 
 
-  <!-- MAIN -->
-  <main>
+    <!-- GENERATED TICKET -->
 
-    <div class="container">
+    <div
+      id="ticketResult"
+      class="hidden"
+    >
 
-      <div class="text-center">
-        <h1>Meatopia Online Ticket</h1>
-        <p>
-          Create your digital event ticket.
-        </p>
-      </div>
+      <div class="ticket">
+
+        <div class="ticket-header">
+
+          <h1>MEATOPIA</h1>
+
+          <p>
+            OFFICIAL EVENT TICKET
+          </p>
+
+        </div>
 
 
-      <!-- TICKET CREATION FORM -->
+        <div class="ticket-body">
 
-      <div class="card">
+          <div class="ticket-row">
 
-        <h2>Create Ticket</h2>
+            <span class="ticket-label">
+              Name
+            </span>
 
-        <form id="ticketForm">
-
-          <div class="form-group">
-
-            <label for="customerName">
-              Ticket Holder Name
-            </label>
-
-            <input
-              type="text"
-              id="customerName"
-              placeholder="Enter full name"
-              required
-            >
+            <span
+              id="ticketName"
+              class="ticket-value"
+            ></span>
 
           </div>
 
 
-          <div class="form-group">
+          <div class="ticket-row">
 
-            <label for="ticketTypeInput">
-              Ticket Type
-            </label>
+            <span class="ticket-label">
+              Ticket
+            </span>
 
-            <select
-              id="ticketTypeInput"
-              required
-            >
-
-              <option value="">
-                Select ticket type
-              </option>
-
-              <option value="General Access">
-                General Access
-              </option>
-
-              <option value="VIP">
-                VIP
-              </option>
-
-            </select>
+            <span
+              id="ticketType"
+              class="ticket-value"
+            ></span>
 
           </div>
 
 
-          <button
-            type="submit"
-            class="btn"
-          >
-            Generate Ticket
-          </button>
+          <div class="ticket-row">
 
-        </form>
+            <span class="ticket-label">
+              Ticket ID
+            </span>
 
-      </div>
+            <span
+              id="ticketId"
+              class="ticket-value"
+            ></span>
+
+          </div>
 
 
-      <!-- GENERATED TICKET -->
+          <div class="ticket-row">
 
-      <div
-        id="ticketResult"
-        class="hidden"
-      >
+            <span class="ticket-label">
+              Event
+            </span>
 
-        <div class="ticket">
+            <span class="ticket-value">
+              Meatopia
+            </span>
 
-          <!-- TICKET HEADER -->
+          </div>
 
-          <div class="ticket-header">
 
-            <h1>
-              MEATOPIA
-            </h1>
+          <div class="ticket-row">
+
+            <span class="ticket-label">
+              Date
+            </span>
+
+            <span class="ticket-value">
+              30/09/2026
+            </span>
+
+          </div>
+
+
+          <div class="ticket-row">
+
+            <span class="ticket-label">
+              Venue
+            </span>
+
+            <span class="ticket-value">
+              Moshupa AOG
+            </span>
+
+          </div>
+
+
+          <div class="qr-container">
+
+            <div id="qrcode"></div>
+
+          </div>
+
+
+          <div class="text-center">
+
+            <strong id="ticketStatus">
+              VALID
+            </strong>
 
             <p>
-              OFFICIAL ONLINE TICKET
+              Scan QR code to verify this ticket.
             </p>
-
-          </div>
-
-
-          <!-- TICKET BODY -->
-
-          <div class="ticket-body">
-
-            <div class="ticket-row">
-
-              <span class="ticket-label">
-                Ticket Holder
-              </span>
-
-              <span
-                id="ticketName"
-                class="ticket-value"
-              >
-              </span>
-
-            </div>
-
-
-            <div class="ticket-row">
-
-              <span class="ticket-label">
-                Ticket Type
-              </span>
-
-              <span
-                id="ticketType"
-                class="ticket-value"
-              >
-              </span>
-
-            </div>
-
-
-            <div class="ticket-row">
-
-              <span class="ticket-label">
-                Ticket ID
-              </span>
-
-              <span
-                id="ticketId"
-                class="ticket-value"
-              >
-              </span>
-
-            </div>
-
-
-            <div class="ticket-row">
-
-              <span class="ticket-label">
-                Status
-              </span>
-
-              <span
-                id="ticketStatus"
-                class="ticket-value"
-              >
-                VALID
-              </span>
-
-            </div>
-
-
-            <!-- QR CODE -->
-
-            <div class="qr-container">
-
-              <div id="qrcode"></div>
-
-            </div>
-
-
-            <div class="text-center">
-
-              <p>
-                Scan this QR code to verify
-                the authenticity of this ticket.
-              </p>
-
-            </div>
 
           </div>
 
@@ -231,27 +242,25 @@
 
     </div>
 
-  </main>
+  </div>
+
+</main>
 
 
-  <!-- FOOTER -->
+<footer>
 
-  <footer>
+  <div class="container">
 
-    <div class="container">
+    <p>
+      © 2026 Meatopia
+    </p>
 
-      <p>
-        © 2026 Meatopia. All rights reserved.
-      </p>
+  </div>
 
-    </div>
-
-  </footer>
+</footer>
 
 
-  <!-- Our JavaScript -->
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
