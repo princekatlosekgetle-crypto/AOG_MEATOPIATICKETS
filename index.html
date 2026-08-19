@@ -1,100 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Meatopia Online Tickets</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- QR CODE LIBRARY -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+  </script>
+
 </head>
+
 
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
+
   <div class="container nav">
 
     <div class="logo">
       MEATOPIA
     </div>
 
+
     <nav class="nav-links">
-      <a href="index.html">Tickets</a>
-      <a href="verify.html">Verify</a>
-      <a href="admin.html">Admin</a>
+
+      <a href="index.html">
+        Tickets
+      </a>
+
+      <a href="verify.html">
+        Verify
+      </a>
+
+      <a href="admin.html">
+        Admin
+      </a>
+
     </nav>
 
   </div>
+
 </header>
 
+
+
+<!-- =========================
+     MAIN
+========================= -->
 
 <main>
 
   <div class="container">
 
+
+    <!-- EVENT INFORMATION -->
+
     <section class="hero">
-      <h1>MEATOPIA</h1>
+
+      <h1>
+        MEATOPIA
+      </h1>
 
       <p>
-        Official online tickets
+        Official Online Tickets
       </p>
 
       <p>
-        30 September 2026 • Moshupa AOG
+        30 September 2026
+        •
+        Moshupa AOG
       </p>
+
     </section>
 
 
-    <div class="card">
 
-      <h2>Get Your Ticket</h2>
+    <!-- =========================
+         TICKET FORM
+    ========================= -->
+
+    <section class="card">
+
+      <h2>
+        Get Your Ticket
+      </h2>
+
 
       <form id="ticketForm">
+
+
+        <!-- NAME -->
 
         <div class="form-group">
 
           <label for="customerName">
-            Full Name
+
+            Ticket Holder Name
+
           </label>
 
+
           <input
+
             type="text"
+
             id="customerName"
-            placeholder="Enter ticket holder's name"
+
+            placeholder="Enter full name"
+
+            autocomplete="name"
+
             required
+
           >
 
         </div>
 
 
+
+        <!-- TICKET TYPE -->
+
         <div class="form-group">
 
           <label for="ticketTypeInput">
+
             Ticket Type
+
           </label>
 
-          <select id="ticketTypeInput" required>
+
+          <select
+
+            id="ticketTypeInput"
+
+            required
+
+          >
 
             <option value="">
-              Select a ticket
+
+              Select ticket type
+
             </option>
+
 
             <option value="Early Bird">
+
               Early Bird — P80
+
             </option>
+
 
             <option value="Standard">
+
               Standard — P100
+
             </option>
+
 
             <option value="Children">
+
               Children — P50
+
             </option>
 
+
             <option value="Group">
+
               Group — P500
+
             </option>
 
           </select>
@@ -102,30 +195,51 @@
         </div>
 
 
+
+        <!-- GENERATE BUTTON -->
+
         <button
+
           type="submit"
+
           class="btn"
+
         >
+
           Generate Ticket
+
         </button>
+
 
       </form>
 
-    </div>
+    </section>
 
 
-    <!-- GENERATED TICKET -->
 
-    <div
+    <!-- =========================
+         GENERATED TICKET
+    ========================= -->
+
+    <section
+
       id="ticketResult"
+
       class="hidden"
+
     >
+
 
       <div class="ticket">
 
+
+        <!-- TICKET HEADER -->
+
         <div class="ticket-header">
 
-          <h1>MEATOPIA</h1>
+          <h1>
+            MEATOPIA
+          </h1>
 
           <p>
             OFFICIAL EVENT TICKET
@@ -134,88 +248,114 @@
         </div>
 
 
+
+        <!-- TICKET INFORMATION -->
+
         <div class="ticket-body">
 
+
           <div class="ticket-row">
 
             <span class="ticket-label">
+
               Name
+
             </span>
 
+
             <span
+
               id="ticketName"
+
               class="ticket-value"
+
             ></span>
 
           </div>
 
 
+
           <div class="ticket-row">
 
             <span class="ticket-label">
+
               Ticket
+
             </span>
 
+
             <span
+
               id="ticketType"
+
               class="ticket-value"
+
             ></span>
 
           </div>
 
 
+
           <div class="ticket-row">
 
             <span class="ticket-label">
+
               Ticket ID
+
             </span>
+
 
             <span
+
               id="ticketId"
+
               class="ticket-value"
+
             ></span>
 
           </div>
 
 
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-              Event
-            </span>
-
-            <span class="ticket-value">
-              Meatopia
-            </span>
-
-          </div>
-
 
           <div class="ticket-row">
 
             <span class="ticket-label">
+
               Date
+
             </span>
 
+
             <span class="ticket-value">
+
               30/09/2026
+
             </span>
 
           </div>
+
 
 
           <div class="ticket-row">
 
             <span class="ticket-label">
+
               Venue
+
             </span>
 
+
             <span class="ticket-value">
+
               Moshupa AOG
+
             </span>
 
           </div>
 
+
+
+          <!-- QR CODE -->
 
           <div class="qr-container">
 
@@ -224,35 +364,54 @@
           </div>
 
 
+
+          <!-- STATUS -->
+
           <div class="text-center">
 
             <strong id="ticketStatus">
+
               VALID
+
             </strong>
 
+
             <p>
-              Scan QR code to verify this ticket.
+
+              Scan the QR code to verify
+              this ticket.
+
             </p>
 
           </div>
+
 
         </div>
 
       </div>
 
-    </div>
+
+    </section>
+
 
   </div>
 
 </main>
 
 
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer>
 
   <div class="container">
 
     <p>
+
       © 2026 Meatopia
+
     </p>
 
   </div>
@@ -260,7 +419,14 @@
 </footer>
 
 
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
