@@ -15,6 +15,7 @@
     rel="stylesheet"
     href="style.css"
   >
+
 </head>
 
 
@@ -106,6 +107,7 @@
               Ticket Holder Name
             </label>
 
+
             <input
               type="text"
               id="customerName"
@@ -124,6 +126,7 @@
             <label for="ticketTypeInput">
               Ticket Type
             </label>
+
 
             <select
               id="ticketTypeInput"
@@ -162,11 +165,17 @@
             class="btn"
             id="generateTicketButton"
           >
-            Generate Ticket
+            Submit Ticket Order
           </button>
 
 
         </form>
+
+
+        <p
+          id="orderMessage"
+          class="error-message"
+        ></p>
 
       </section>
 
@@ -232,6 +241,21 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
+                Price
+              </span>
+
+              <span
+                id="ticketPrice"
+                class="ticket-value"
+              ></span>
+
+            </div>
+
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
                 Ticket ID
               </span>
 
@@ -260,135 +284,4 @@
 
             <div class="ticket-row">
 
-              <span class="ticket-label">
-                Date
-              </span>
-
-              <span class="ticket-value">
-                30 September 2026
-              </span>
-
-            </div>
-
-
-
-            <div class="ticket-row">
-
-              <span class="ticket-label">
-                Venue
-              </span>
-
-              <span class="ticket-value">
-                Moshupa AOG
-              </span>
-
-            </div>
-
-
-
-            <!-- QR CODE -->
-
-            <div class="qr-container">
-
-              <div id="qrcode"></div>
-
-            </div>
-
-
-
-            <div class="text-center">
-
-              <strong id="ticketStatus">
-                VALID
-              </strong>
-
-              <p>
-                This ticket contains a
-                unique identification code.
-              </p>
-
-            </div>
-
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-
-      <!-- STAFF AREA -->
-
-      <section class="card">
-
-        <h2>
-          Staff Area
-        </h2>
-
-        <p>
-          Authorized staff only.
-        </p>
-
-
-        <div class="staff-buttons">
-
-
-          <a
-            href="verify.html"
-            class="btn"
-          >
-            Staff Ticket Verification
-          </a>
-
-
-          <a
-            href="admin.html"
-            class="btn"
-          >
-            Staff Admin Login
-          </a>
-
-
-        </div>
-
-      </section>
-
-
-    </div>
-
-  </main>
-
-
-
-  <!-- FOOTER -->
-
-  <footer>
-
-    <div class="container">
-
-      <p>
-        © 2026 Meatopia
-      </p>
-
-    </div>
-
-  </footer>
-
-
-
-  <!-- QR CODE LIBRARY -->
-
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-  </script>
-
-
-  <!-- MEATOPIA JAVASCRIPT -->
-
-  <script src="script.js"></script>
-
-
-</body>
-
-</html>
+              <span class="ticket
