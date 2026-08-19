@@ -288,7 +288,38 @@
 
 
   <script src="script.js"></script>
+<!-- Supabase Authentication -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = "https://kqvekxywsyjuhjggwrpa.supabase.co";
+const SUPABASE_KEY = "sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+// Check whether the admin is logged in
+async function checkAdminLogin() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (!session) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    console.log("Admin logged in:", session.user.email);
+}
+
+checkAdminLogin();
+
+// Logout function
+async function logoutAdmin() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "index.html";
+}
+</script>
 </body>
 
 </html>
