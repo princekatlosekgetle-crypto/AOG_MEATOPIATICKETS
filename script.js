@@ -1,382 +1,194 @@
 /* =========================================================
-   MEATOPIA ONLINE TICKETS
-   Main JavaScript
+   MEATOPIA ONLINE TICKET SYSTEM
+   COMPLETE SCRIPT.JS
    ========================================================= */
 
-/*
-  Generates a unique ticket ID.
+(function () {
+  "use strict";
 
-  Example:
-  MTP-7K4X9P2Q
-*/
-function generateTicketId() {
-  const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
+  const STORAGE_KEY = "meatopia_tickets_v1";
 
-  for (let i = 0; i < 8; i++) {
-    code += characters.charAt(
-      Math.floor(Math.random() * characters.length)
+  /* -------------------------------------------------------
+     UNIQUE TICKET ID
+     Example: MTP-8K4P-X7Q2
+  ------------------------------------------------------- */
+
+  function generateTicketId() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    function part(length) {
+      let result = "";
+
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(
+          Math.floor(Math.random() * chars.length)
+        );
+      }
+
+      return result;
+    }
+
+    return "MTP-" + part(4) + "-" + part(4);
+  }
+
+
+  /* -------------------------------------------------------
+     LOAD TICKETS
+  ------------------------------------------------------- */
+
+  function getTickets() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (!saved) {
+        return [];
+      }
+
+      const tickets = JSON.parse(saved);
+
+      return Array.isArray(tickets) ? tickets : [];
+
+    } catch (error) {
+      console.error("Unable to load tickets:", error);
+      return [];
+    }
+  }
+
+
+  /* -------------------------------------------------------
+     SAVE TICKETS
+  ------------------------------------------------------- */
+
+  function saveTickets(tickets) {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(tickets)
     );
   }
 
-  return "MTP-" + code;
-}
 
+  /* -------------------------------------------------------
+     CREATE TICKET
+  ------------------------------------------------------- */
 
-/*
-  Creates the data for a new ticket.
-*/
-function createTicketData(name, ticketType) {
-  const ticketId = generateTicketId();
+  function createTicket(name, type) {
 
-  return {
-    id: ticketId,
-    name: name,
-    type: ticketType,
-    status: "VALID",
-    createdAt: new Date().toISOString()
-  };
-}
+    name = String(name || "").trim();
+    type = String(type || "").trim();
 
+    if (!name) {
+      throw new Error("Ticket holder name is required.");
+    }
 
-/*
-  Save a ticket in the browser.
+    if (!type) {
+      throw new Error("Ticket type is required.");
+    }
 
-  This is useful while we are building/testing
-  the website on GitHub Pages.
-*/
-function saveTicket(ticket) {
-  const tickets = getTickets();
+    const tickets = getTickets();
 
-  tickets.push(ticket);
+    let ticketId;
 
-  localStorage.setItem(
-    "meatopiaTickets",
-    JSON.stringify(tickets)
-  );
-}
+    do {
+      ticketId = generateTicketId();
+    } while (
+      tickets.some(ticket => ticket.id === ticketId)
+    );
 
-
-/*
-  Get all tickets stored on this device.
-*/
-function getTickets() {
-  const saved = localStorage.getItem("meatopiaTickets");
-
-  if (!saved) {
-    return [];
-  }
-
-  try {
-    return JSON.parse(saved);
-  } catch (error) {
-    console.error("Could not read tickets:", error);
-    return [];
-  }
-}
-
-
-/*
-  Find a ticket using its unique ID.
-*/
-function findTicket(ticketId) {
-  const tickets = getTickets();
-
-  return tickets.find(
-    ticket =>
-      ticket.id.toUpperCase() === ticketId.toUpperCase()
-  );
-}
-
-
-/*
-  Verify a ticket.
-*/
-function verifyTicket(ticketId) {
-  const ticket = findTicket(ticketId);
-
-  if (!ticket) {
-    return {
-      valid: false,
-      message: "Ticket not found."
+    const ticket = {
+      id: ticketId,
+      name: name,
+      type: type,
+      status: "VALID",
+      createdAt: new Date().toISOString()
     };
+
+    tickets.push(ticket);
+
+    saveTickets(tickets);
+
+    return ticket;
   }
 
-  if (ticket.status !== "VALID") {
-    return {
-      valid: false,
-      message: "This ticket is not valid."
-    };
-  }
 
-  return {
-    valid: true,
-    ticket: ticket,
-    message: "Ticket is valid."
-  };
-}
+  /* -------------------------------------------------------
+     FIND TICKET
+  ------------------------------------------------------- */
 
-
-/*
-  Display ticket information on a page.
-*/
-function displayTicket(ticket) {
-  const idElement = document.getElementById("ticketId");
-  const nameElement = document.getElementById("ticketName");
-  const typeElement = document.getElementById("ticketType");
-  const statusElement = document.getElementById("ticketStatus");
-
-  if (idElement) {
-    idElement.textContent = ticket.id;
-  }
-
-  if (nameElement) {
-    nameElement.textContent = ticket.name;
-  }
-
-  if (typeElement) {
-    typeElement.textContent = ticket.type;
-  }
-
-  if (statusElement) {
-    statusElement.textContent = ticket.status;
-  }
-
-  generateQRCode(ticket.id);
-}
-
-
-/*
-  Generate a QR code for the ticket ID.
-
-  The QR library will be connected to the page
-  when we build index.html.
-*/
-function generateQRCode(ticketId) {
-  const qrContainer = document.getElementById("qrcode");
-
-  if (!qrContainer) {
-    return;
-  }
-
-  qrContainer.innerHTML = "";
-
-  if (typeof QRCode === "undefined") {
-    console.error(
-      "QR Code library has not been loaded."
-    );
-
-    qrContainer.textContent =
-      "QR code library not loaded.";
-
-    return;
-  }
-
-  new QRCode(qrContainer, {
-    text: ticketId,
-    width: 180,
-    height: 180,
-    correctLevel: QRCode.CorrectLevel.H
-  });
-}
-
-
-/*
-  Create a ticket from the admin form.
-*/
-function setupTicketCreation() {
-  const form = document.getElementById("ticketForm");
-
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const nameInput =
-      document.getElementById("customerName");
-
-    const typeInput =
-      document.getElementById("ticketTypeInput");
-
-    if (!nameInput || !typeInput) {
-      return;
-    }
-
-    const name = nameInput.value.trim();
-    const type = typeInput.value.trim();
-
-    if (!name || !type) {
-      alert("Please enter all ticket information.");
-      return;
-    }
-
-    const ticket = createTicketData(
-      name,
-      type
-    );
-
-    saveTicket(ticket);
-
-    /*
-      Show the newly created ticket.
-    */
-    displayTicket(ticket);
-
-    /*
-      Put the ticket ID somewhere on the page
-      if an element exists.
-    */
-    const result = document.getElementById(
-      "ticketResult"
-    );
-
-    if (result) {
-      result.classList.remove("hidden");
-    }
-
-    /*
-      Clear the form.
-    */
-    form.reset();
-  });
-}
-
-
-/*
-  Ticket verification form.
-*/
-function setupVerification() {
-  const form =
-    document.getElementById("verifyForm");
-
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const input =
-      document.getElementById("verifyTicketId");
-
-    const result =
-      document.getElementById("verificationResult");
-
-    if (!input || !result) {
-      return;
-    }
-
-    const ticketId =
-      input.value.trim();
+  function findTicket(ticketId) {
 
     if (!ticketId) {
-      result.className =
-        "status status-warning";
+      return null;
+    }
 
-      result.textContent =
-        "Please enter a ticket ID.";
+    const searchId =
+      String(ticketId)
+        .trim()
+        .toUpperCase();
+
+    const tickets = getTickets();
+
+    return tickets.find(
+      ticket =>
+        String(ticket.id).toUpperCase() === searchId
+    ) || null;
+  }
+
+
+  /* -------------------------------------------------------
+     VERIFY TICKET
+  ------------------------------------------------------- */
+
+  function verifyTicket(ticketId) {
+
+    const ticket = findTicket(ticketId);
+
+    if (!ticket) {
+      return {
+        valid: false,
+        message: "TICKET NOT FOUND"
+      };
+    }
+
+    if (ticket.status !== "VALID") {
+      return {
+        valid: false,
+        message: "TICKET IS NOT VALID"
+      };
+    }
+
+    return {
+      valid: true,
+      message: "VALID TICKET",
+      ticket: ticket
+    };
+  }
+
+
+  /* -------------------------------------------------------
+     QR CODE
+  ------------------------------------------------------- */
+
+  function createQRCode(ticketId) {
+
+    const container =
+      document.getElementById("qrcode");
+
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+
+    if (typeof QRCode === "undefined") {
+
+      container.innerHTML =
+        "<p>QR CODE LIBRARY NOT LOADED</p>";
+
+      console.error(
+        "QRCode library was not found."
+      );
 
       return;
     }
 
-    const verification =
-      verifyTicket(ticketId);
-
-    if (!verification.valid) {
-      result.className =
-        "status status-error";
-
-      result.textContent =
-        verification.message;
-
-      return;
-    }
-
-    result.className =
-      "status status-success";
-
-    result.innerHTML =
-      "✓ VALID TICKET<br>" +
-      "Ticket ID: " +
-      verification.ticket.id +
-      "<br>" +
-      "Name: " +
-      verification.ticket.name;
-  });
-}
-
-
-/*
-  Display all tickets in the admin table.
-*/
-function displayTicketsTable() {
-  const tableBody =
-    document.getElementById("ticketsTableBody");
-
-  if (!tableBody) {
-    return;
-  }
-
-  const tickets = getTickets();
-
-  tableBody.innerHTML = "";
-
-  if (tickets.length === 0) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="4">
-          No tickets created yet.
-        </td>
-      </tr>
-    `;
-
-    return;
-  }
-
-  tickets.forEach(function (ticket) {
-    const row =
-      document.createElement("tr");
-
-    row.innerHTML = `
-      <td>${escapeHTML(ticket.id)}</td>
-      <td>${escapeHTML(ticket.name)}</td>
-      <td>${escapeHTML(ticket.type)}</td>
-      <td>${escapeHTML(ticket.status)}</td>
-    `;
-
-    tableBody.appendChild(row);
-  });
-}
-
-
-/*
-  Basic protection against inserting HTML
-  from ticket/customer names.
-*/
-function escapeHTML(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-/*
-  Run the correct functions when the page loads.
-*/
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    setupTicketCreation();
-
-    setupVerification();
-
-    displayTicketsTable();
-
-  }
-);
+    new QRCode
