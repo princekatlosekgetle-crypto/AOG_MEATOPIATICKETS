@@ -1,509 +1,963 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Meatopia | Staff Admin</title>
+<meta charset="UTF-8">
 
-  <link rel="stylesheet" href="style.css">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-  <style>
-    .hidden {
-      display: none !important;
-    }
+<title>Meatopia | Admin</title>
 
-    .auth-user {
-      margin-top: 10px;
-      font-size: 14px;
-      opacity: 0.8;
-    }
+<link
+  rel="stylesheet"
+  href="style.css"
+>
 
-    .success-message {
-      color: green;
-      margin-top: 12px;
-    }
-
-    .error-message {
-      color: #d00000;
-      margin-top: 12px;
-    }
-
-    .ticket-item {
-      padding: 15px;
-      margin-bottom: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-
-    .ticket-item strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-  </style>
 </head>
+
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="container nav">
 
-      <div class="logo">
-        MEATOPIA
-      </div>
+<header>
 
-      <nav class="nav-links">
-        <a href="index.html">Tickets</a>
-        <a href="verify.html">Verify</a>
-        <a href="admin.html">Admin</a>
-      </nav>
+<div class="container nav">
 
-    </div>
-  </header>
+<div class="logo">
+MEATOPIA
+</div>
 
 
-  <!-- MAIN -->
-  <main>
+<nav class="nav-links">
 
-    <div class="container">
+<a href="index.html">
+Tickets
+</a>
 
-      <!-- SUPABASE ADMIN LOGIN -->
-      <section id="adminLogin" class="card">
+<a href="verify.html">
+Verify
+</a>
 
-        <h1>Staff Admin</h1>
+<a href="admin.html">
+Admin
+</a>
 
-        <p>
-          Authorized staff only.
-        </p>
+</nav>
 
-        <form id="adminLoginForm">
+</div>
 
-          <div class="form-group">
+</header>
 
-            <label for="adminEmail">
-              Admin Email
-            </label>
 
-            <input
-              type="email"
-              id="adminEmail"
-              placeholder="Admin email"
-              autocomplete="email"
-              required
-            >
 
-          </div>
+<main>
 
+<div class="container">
 
-          <div class="form-group">
 
-            <label for="adminPassword">
-              Password
-            </label>
+<!-- LOGIN -->
 
-            <input
-              type="password"
-              id="adminPassword"
-              placeholder="Admin password"
-              autocomplete="current-password"
-              required
-            >
+<section
+id="loginSection"
+class="card"
+>
 
-          </div>
+<h1>
+Staff Admin Login
+</h1>
 
+<p>
+Authorized staff only.
+</p>
 
-          <button
-            type="submit"
-            class="btn"
-            id="loginButton"
-          >
-            Staff Login
-          </button>
 
-        </form>
+<form id="loginForm">
 
 
-        <p
-          id="adminLoginMessage"
-          class="error-message"
-        ></p>
+<div class="form-group">
 
-      </section>
+<label for="email">
+Email
+</label>
 
+<input
+id="email"
+type="email"
+placeholder="Admin email"
+autocomplete="email"
+required
+>
 
-      <!-- ADMIN DASHBOARD -->
-      <section
-        id="adminDashboard"
-        class="hidden"
-      >
+</div>
 
-        <section class="hero">
 
-          <h1>
-            Admin Dashboard
-          </h1>
 
-          <p>
-            Meatopia Ticket Management
-          </p>
+<div class="form-group">
 
-          <p
-            id="loggedInUser"
-            class="auth-user"
-          ></p>
+<label for="password">
+Password
+</label>
 
-        </section>
+<input
+id="password"
+type="password"
+placeholder="Password"
+autocomplete="current-password"
+required
+>
 
+</div>
 
-        <!-- STATISTICS -->
-        <section class="card">
 
-          <h2>
-            Ticket Statistics
-          </h2>
 
-          <div class="ticket-stats">
+<button
+type="submit"
+class="btn"
+id="loginButton"
+>
 
-            <div class="stat">
+Login
 
-              <strong id="totalTickets">
-                0
-              </strong>
+</button>
 
-              <span>
-                Total Tickets
-              </span>
 
-            </div>
+</form>
 
 
-            <div class="stat">
+<p id="loginMessage"></p>
 
-              <strong id="validTickets">
-                0
-              </strong>
+</section>
 
-              <span>
-                Valid Tickets
-              </span>
 
-            </div>
 
+<!-- DASHBOARD -->
 
-            <div class="stat">
+<section
+id="dashboard"
+class="hidden"
+>
 
-              <strong id="usedTickets">
-                0
-              </strong>
 
-              <span>
-                Used Tickets
-              </span>
+<section class="hero">
 
-            </div>
+<h1>
+Admin Dashboard
+</h1>
 
-          </div>
+<p>
+Meatopia Ticket Management
+</p>
 
-        </section>
+</section>
 
 
-        <!-- TICKET LIST -->
-        <section class="card">
 
-          <h2>
-            Tickets
-          </h2>
+<!-- STATS -->
 
-          <div id="ticketList">
+<section class="card">
 
-            <p>
-              Loading tickets...
-            </p>
+<h2>
+Ticket Statistics
+</h2>
 
-          </div>
 
-        </section>
+<div class="ticket-stats">
 
 
-        <!-- LOGOUT -->
-        <section class="card">
+<div class="stat">
 
-          <button
-            id="adminLogout"
-            class="btn"
-            type="button"
-          >
-            Logout
-          </button>
+<strong id="totalTickets">
+0
+</strong>
 
-        </section>
+<span>
+Total
+</span>
 
-      </section>
+</div>
 
-    </div>
 
-  </main>
 
+<div class="stat">
 
-  <!-- FOOTER -->
-  <footer>
+<strong id="pendingTickets">
+0
+</strong>
 
-    <div class="container">
+<span>
+Pending
+</span>
 
-      <p>
-        © 2026 Meatopia
-      </p>
+</div>
 
-    </div>
 
-  </footer>
 
+<div class="stat">
 
-  <!-- EXISTING WEBSITE SCRIPT -->
-  <script src="script.js"></script>
+<strong id="validTickets">
+0
+</strong>
 
+<span>
+Valid
+</span>
 
-  <!-- SUPABASE -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</div>
 
 
-  <!-- AUTHENTICATION -->
-  <script>
 
-    const SUPABASE_URL =
-      "https://kqvekxywsyjuhjggwrpa.supabase.co";
+<div class="stat">
 
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+<strong id="usedTickets">
+0
+</strong>
 
+<span>
+Used
+</span>
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
+</div>
 
 
-    const loginForm =
-      document.getElementById("adminLoginForm");
+</div>
 
-    const loginSection =
-      document.getElementById("adminLogin");
+</section>
 
-    const dashboard =
-      document.getElementById("adminDashboard");
 
-    const loginMessage =
-      document.getElementById("adminLoginMessage");
 
-    const loginButton =
-      document.getElementById("loginButton");
+<!-- TICKETS -->
 
-    const logoutButton =
-      document.getElementById("adminLogout");
+<section class="card">
 
-    const loggedInUser =
-      document.getElementById("loggedInUser");
+<div
+style="display:flex;justify-content:space-between;align-items:center;gap:10px;"
+>
 
+<h2>
+Tickets
+</h2>
 
-    // --------------------------------
-    // CHECK LOGIN
-    // --------------------------------
 
-    async function checkAdminLogin() {
+<button
+id="refreshButton"
+class="btn"
+type="button"
+>
 
-      const {
-        data: {
-          session
-        }
-      } = await supabaseClient.auth.getSession();
+Refresh
 
+</button>
 
-      if (session) {
+</div>
 
-        showDashboard(session);
 
-      } else {
+<div id="ticketList">
 
-        showLogin();
+<p>
+Loading tickets...
+</p>
 
-      }
+</div>
 
-    }
+</section>
 
 
-    // --------------------------------
-    // SHOW LOGIN
-    // --------------------------------
 
-    function showLogin() {
+<!-- LOGOUT -->
 
-      loginSection.classList.remove("hidden");
+<section class="card">
 
-      dashboard.classList.add("hidden");
+<button
+id="logoutButton"
+class="btn"
+type="button"
+>
 
-    }
+Logout
 
+</button>
 
-    // --------------------------------
-    // SHOW DASHBOARD
-    // --------------------------------
+</section>
 
-    function showDashboard(session) {
 
-      loginSection.classList.add("hidden");
+</section>
 
-      dashboard.classList.remove("hidden");
 
+</div>
 
-      if (
-        session &&
-        session.user &&
-        session.user.email
-      ) {
+</main>
 
-        loggedInUser.textContent =
-          "Logged in as: " +
-          session.user.email;
 
-      }
 
-    }
+<footer>
 
+<div class="container">
 
-    // --------------------------------
-    // LOGIN
-    // --------------------------------
+<p>
+© 2026 Meatopia
+</p>
 
-    loginForm.addEventListener(
-      "submit",
-      async function(event) {
+</div>
 
-        event.preventDefault();
+</footer>
 
 
-        const email =
-          document
-            .getElementById("adminEmail")
-            .value
-            .trim();
 
+<!-- SUPABASE -->
 
-        const password =
-          document
-            .getElementById("adminPassword")
-            .value;
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-        loginMessage.textContent =
-          "Signing in...";
 
+<script>
 
-        loginMessage.className =
-          "success-message";
 
+const SUPABASE_URL =
+"https://kqvekxywsyjuhjggwrpa.supabase.co";
 
-        loginButton.disabled = true;
 
+const SUPABASE_KEY =
+"sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
 
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
 
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-        if (error) {
 
-          loginMessage.textContent =
-            "Login failed: " +
-            error.message;
 
-          loginMessage.className =
-            "error-message";
+const loginSection =
+document.getElementById(
+"loginSection"
+);
 
-          loginButton.disabled = false;
 
-          return;
+const dashboard =
+document.getElementById(
+"dashboard"
+);
 
-        }
 
+const loginForm =
+document.getElementById(
+"loginForm"
+);
 
-        loginMessage.textContent =
-          "Login successful.";
 
+const loginMessage =
+document.getElementById(
+"loginMessage"
+);
 
-        showDashboard(data.session);
 
+const ticketList =
+document.getElementById(
+"ticketList"
+);
 
-        loginButton.disabled = false;
 
-      }
-    );
 
+/* CHECK LOGIN */
 
-    // --------------------------------
-    // LOGOUT
-    // --------------------------------
 
-    logoutButton.addEventListener(
-      "click",
-      async function() {
+async function checkLogin() {
 
-        await supabaseClient.auth.signOut();
 
-        showLogin();
+const {
+data
+} =
+await supabaseClient.auth.getSession();
 
-        document
-          .getElementById("adminEmail")
-          .value = "";
 
-        document
-          .getElementById("adminPassword")
-          .value = "";
+if (
+data.session
+) {
 
-        loginMessage.textContent =
-          "You have been logged out.";
+showDashboard();
 
-        loginMessage.className =
-          "success-message";
+} else {
 
-      }
-    );
+showLogin();
 
+}
 
-    // --------------------------------
-    // AUTH STATE LISTENER
-    // --------------------------------
+}
 
-    supabaseClient.auth.onAuthStateChange(
-      function(event, session) {
 
-        if (session) {
 
-          showDashboard(session);
+/* SHOW LOGIN */
 
-        } else {
 
-          showLogin();
+function showLogin() {
 
-        }
+loginSection.classList.remove(
+"hidden"
+);
 
-      }
-    );
+dashboard.classList.add(
+"hidden"
+);
 
+}
 
-    // --------------------------------
-    // START
-    // --------------------------------
 
-    checkAdminLogin();
 
-  </script>
+/* SHOW DASHBOARD */
+
+
+function showDashboard() {
+
+loginSection.classList.add(
+"hidden"
+);
+
+dashboard.classList.remove(
+"hidden"
+);
+
+loadTickets();
+
+}
+
+
+
+/* LOGIN */
+
+
+loginForm.addEventListener(
+"submit",
+async function(event) {
+
+event.preventDefault();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+const button =
+document.getElementById(
+"loginButton"
+);
+
+
+button.disabled =
+true;
+
+
+button.textContent =
+"Logging in...";
+
+
+loginMessage.textContent =
+"";
+
+
+const {
+data,
+error
+} =
+await supabaseClient.auth.signInWithPassword({
+
+email: email,
+
+password: password
+
+});
+
+
+if (error) {
+
+loginMessage.textContent =
+error.message;
+
+button.disabled =
+false;
+
+button.textContent =
+"Login";
+
+return;
+
+}
+
+
+showDashboard();
+
+
+}
+);
+
+
+
+/* LOAD TICKETS */
+
+
+async function loadTickets() {
+
+
+ticketList.innerHTML =
+"<p>Loading tickets...</p>";
+
+
+const {
+data: tickets,
+error
+} =
+await supabaseClient
+.from("Tickets.aog")
+.select("*")
+.order(
+"created_at",
+{
+ascending: false
+}
+);
+
+
+if (error) {
+
+ticketList.innerHTML =
+"<p>Unable to load tickets: " +
+error.message +
+"</p>";
+
+console.error(error);
+
+return;
+
+}
+
+
+updateStatistics(
+tickets || []
+);
+
+
+if (
+!tickets ||
+tickets.length === 0
+) {
+
+ticketList.innerHTML =
+"<p>No tickets found.</p>";
+
+return;
+
+}
+
+
+ticketList.innerHTML = "";
+
+
+tickets.forEach(
+function(ticket) {
+
+const card =
+document.createElement(
+"div"
+);
+
+
+card.className =
+"card";
+
+
+card.style.marginTop =
+"15px";
+
+
+const status =
+String(
+ticket.status || ""
+)
+.toLowerCase();
+
+
+card.innerHTML = `
+
+<h3>
+${escapeHtml(ticket.holder_name)}
+</h3>
+
+<p>
+<strong>Ticket ID:</strong>
+${escapeHtml(ticket.ticket_id)}
+</p>
+
+<p>
+<strong>Type:</strong>
+${escapeHtml(ticket.ticket_type)}
+</p>
+
+<p>
+<strong>Price:</strong>
+P${escapeHtml(ticket.price)}
+</p>
+
+<p>
+<strong>Status:</strong>
+${escapeHtml(ticket.status)}
+</p>
+
+<p>
+<strong>Date:</strong>
+${escapeHtml(ticket.event_date)}
+</p>
+
+<p>
+<strong>Venue:</strong>
+${escapeHtml(ticket.venue)}
+</p>
+
+<div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+
+${
+status === "pending"
+?
+
+`
+
+<button
+class="btn approve-button"
+data-id="${escapeHtml(ticket.ticket_id)}"
+type="button"
+>
+Approve Payment
+</button>
+
+`
+
+:
+
+""
+
+}
+
+${
+status === "valid"
+?
+
+`
+
+<button
+class="btn used-button"
+data-id="${escapeHtml(ticket.ticket_id)}"
+type="button"
+>
+Mark Used
+</button>
+
+`
+
+:
+
+""
+
+}
+
+</div>
+
+`;
+
+
+ticketList.appendChild(
+card
+);
+
+}
+
+);
+
+
+}
+
+
+
+/* STATISTICS */
+
+
+function updateStatistics(
+tickets
+) {
+
+
+let pending = 0;
+
+let valid = 0;
+
+let used = 0;
+
+
+tickets.forEach(
+function(ticket) {
+
+const status =
+String(
+ticket.status || ""
+)
+.toLowerCase();
+
+
+if (
+status === "pending"
+) {
+
+pending++;
+
+}
+
+
+if (
+status === "valid"
+) {
+
+valid++;
+
+}
+
+
+if (
+status === "used"
+) {
+
+used++;
+
+}
+
+});
+
+
+document.getElementById(
+"totalTickets"
+).textContent =
+tickets.length;
+
+
+document.getElementById(
+"pendingTickets"
+).textContent =
+pending;
+
+
+document.getElementById(
+"validTickets"
+).textContent =
+valid;
+
+
+document.getElementById(
+"usedTickets"
+).textContent =
+used;
+
+}
+
+
+
+/* APPROVE / MARK USED */
+
+
+ticketList.addEventListener(
+"click",
+async function(event) {
+
+
+const button =
+event.target.closest(
+"button"
+);
+
+
+if (!button) {
+return;
+}
+
+
+const ticketId =
+button.dataset.id;
+
+
+if (
+button.classList.contains(
+"approve-button"
+)
+) {
+
+await changeStatus(
+ticketId,
+"valid"
+);
+
+}
+
+
+if (
+button.classList.contains(
+"used-button"
+)
+) {
+
+await changeStatus(
+ticketId,
+"used"
+);
+
+}
+
+});
+
+
+
+/* CHANGE STATUS */
+
+
+async function changeStatus(
+ticketId,
+newStatus
+) {
+
+
+const confirmed =
+confirm(
+"Change ticket " +
+ticketId +
+" to " +
+newStatus +
+"?"
+);
+
+
+if (!confirmed) {
+return;
+}
+
+
+const {
+error
+} =
+await supabaseClient
+.from("Tickets.aog")
+.update({
+
+status: newStatus
+
+})
+.eq(
+"ticket_id",
+ticketId
+);
+
+
+if (error) {
+
+alert(
+"Update failed: " +
+error.message
+);
+
+console.error(error);
+
+return;
+
+}
+
+
+loadTickets();
+
+}
+
+
+
+/* ESCAPE HTML */
+
+
+function escapeHtml(
+value
+) {
+
+return String(
+value ?? ""
+)
+.replace(
+/&/g,
+"&amp;"
+)
+.replace(
+/</g,
+"&lt;"
+)
+.replace(
+/>/g,
+"&gt;"
+)
+.replace(
+/"/g,
+"&quot;"
+)
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+
+/* REFRESH */
+
+
+document.getElementById(
+"refreshButton"
+).addEventListener(
+"click",
+loadTickets
+);
+
+
+
+/* LOGOUT */
+
+
+document.getElementById(
+"logoutButton"
+).addEventListener(
+"click",
+async function() {
+
+await supabaseClient.auth.signOut();
+
+showLogin();
+
+}
+);
+
+
+
+/* START */
+
+
+checkLogin();
+
+
+</script>
+
 
 </body>
+
 </html>
