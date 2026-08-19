@@ -1,76 +1,294 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meatopia Admin</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#111;color:#fff}
-header{background:#202020;padding:22px;text-align:center;border-bottom:2px solid #333}header h1{margin:0;letter-spacing:3px}
-.container{max-width:950px;margin:auto;padding:20px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat,.card,.order{background:#202020;border-radius:14px;padding:18px}.stat{text-align:center}.stat strong{display:block;font-size:28px;margin-top:8px}
-.card{margin-top:15px}.order{border:1px solid #444;margin-top:12px}.status{display:inline-block;padding:6px 10px;border-radius:20px;font-size:13px;font-weight:bold}
-.pending{background:#f0a500;color:#000}.approved{background:#19c463}.rejected{background:#e53935}
-button{border:0;border-radius:8px;padding:12px 15px;font-weight:bold;cursor:pointer;margin:5px 3px 0 0}.approve{background:#19c463;color:#fff}.reject{background:#e53935;color:#fff}.refresh{background:#fff;color:#111;width:100%}
-.empty{text-align:center;padding:30px;color:#aaa}.ticketcode{font-family:monospace;background:#111;padding:10px;border-radius:8px;word-break:break-all}
-@media(max-width:600px){.stats{grid-template-columns:1fr}}
-</style>
-</head>
-<body>
-<header><h1>MEATOPIA</h1><p>ADMIN DASHBOARD</p></header>
-<div class="container">
-<div class="stats">
-<div class="stat">Pending<strong id="pending">0</strong></div>
-<div class="stat">Approved<strong id="approved">0</strong></div>
-<div class="stat">Rejected<strong id="rejected">0</strong></div>
-</div>
-<div class="card"><h2>Orders</h2><button class="refresh" onclick="load()">REFRESH ORDERS</button><div id="orders"></div></div>
-</div>
-<script>
-const API_URL=""; // Add your Google Apps Script Web App URL here later.
 
-function load(){
- let orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]");
- render(orders);
- if(API_URL){
-  fetch(API_URL).then(r=>r.json()).then(data=>render(data.orders||data)).catch(()=>{});
- }
-}
-function render(orders){
- const box=document.getElementById("orders"); box.innerHTML="";
- let p=0,a=0,r=0;
- if(!orders.length){box.innerHTML='<div class="empty">No orders found.</div>';update(0,0,0);return;}
- orders.forEach((o,i)=>{
-  if(o.status==="Pending")p++; if(o.status==="Approved")a++; if(o.status==="Rejected")r++;
-  const d=document.createElement("div");d.className="order";
-  const safe=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-  d.innerHTML=`<h3>${safe(o.ticket)}</h3>
-  <p><b>Order:</b> ${safe(o.orderId)}</p><p><b>Name:</b> ${safe(o.name)}</p>
-  <p><b>WhatsApp:</b> ${safe(o.phone)}</p><p><b>Email:</b> ${safe(o.email)}</p>
-  <p><b>Amount:</b> P${safe(o.amount)}</p><p><b>Payment:</b> ${safe(o.method)}</p>
-  <p><b>Reference:</b> ${safe(o.reference)}</p>
-  <p><span class="status ${String(o.status||"Pending").toLowerCase()}">${safe(o.status)}</span></p>
-  ${o.ticketNumber?`<p><b>Ticket:</b> ${safe(o.ticketNumber)}</p><div class="ticketcode">${safe(o.qrData||"")}</div>`:""}
-  ${o.status==="Pending"?`<button class="approve" onclick="approve(${i})">APPROVE</button><button class="reject" onclick="reject(${i})">REJECT</button>`:""}`;
-  box.appendChild(d);
- });
- update(p,a,r);
-}
-function update(p,a,r){document.getElementById("pending").textContent=p;document.getElementById("approved").textContent=a;document.getElementById("rejected").textContent=r;}
-function save(orders){localStorage.setItem("meatopia_orders",JSON.stringify(orders));render(orders);}
-function approve(i){
- const orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]"),o=orders[i];
- if(!o||!confirm("Approve payment for "+o.orderId+"?"))return;
- o.status="Approved";o.ticketNumber="MT-"+Date.now().toString().slice(-8);o.qrData=o.ticketNumber+"|"+o.orderId+"|"+o.name;
- save(orders);
- alert("Payment approved. Ticket "+o.ticketNumber+" has been created.");
-}
-function reject(i){
- const orders=JSON.parse(localStorage.getItem("meatopia_orders")||"[]"),o=orders[i];
- if(!o||!confirm("Reject payment for "+o.orderId+"?"))return;
- o.status="Rejected";save(orders);
-}
-load();
-</script>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Meatopia | Staff Admin</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+
+<body>
+
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="container nav">
+
+      <div class="logo">
+        MEATOPIA
+      </div>
+
+
+      <nav class="nav-links">
+
+        <a href="index.html">
+          Tickets
+        </a>
+
+        <a href="verify.html">
+          Verify
+        </a>
+
+        <a href="admin.html">
+          Admin
+        </a>
+
+      </nav>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- MAIN -->
+
+  <main>
+
+    <div class="container">
+
+
+      <!-- ADMIN LOGIN -->
+
+      <section
+        id="adminLogin"
+        class="card"
+      >
+
+        <h1>
+          Staff Admin
+        </h1>
+
+        <p>
+          Authorized staff only.
+        </p>
+
+
+        <form id="adminLoginForm">
+
+
+          <div class="form-group">
+
+            <label for="adminUsername">
+              Username
+            </label>
+
+
+            <input
+              type="text"
+              id="adminUsername"
+              placeholder="Staff username"
+              autocomplete="username"
+              required
+            >
+
+          </div>
+
+
+
+          <div class="form-group">
+
+            <label for="adminPassword">
+              Password
+            </label>
+
+
+            <input
+              type="password"
+              id="adminPassword"
+              placeholder="Staff password"
+              autocomplete="current-password"
+              required
+            >
+
+          </div>
+
+
+
+          <button
+            type="submit"
+            class="btn"
+          >
+            Staff Login
+          </button>
+
+
+        </form>
+
+
+        <p
+          id="adminLoginMessage"
+          class="error-message"
+        ></p>
+
+      </section>
+
+
+
+      <!-- ADMIN DASHBOARD -->
+
+      <section
+        id="adminDashboard"
+        class="hidden"
+      >
+
+
+        <section class="hero">
+
+          <h1>
+            Admin Dashboard
+          </h1>
+
+          <p>
+            Meatopia Ticket Management
+          </p>
+
+        </section>
+
+
+
+        <!-- STATISTICS -->
+
+        <section class="card">
+
+          <h2>
+            Ticket Statistics
+          </h2>
+
+
+          <div class="ticket-stats">
+
+
+            <div class="stat">
+
+              <strong
+                id="totalTickets"
+              >
+                0
+              </strong>
+
+              <span>
+                Total Tickets
+              </span>
+
+            </div>
+
+
+            <div class="stat">
+
+              <strong
+                id="validTickets"
+              >
+                0
+              </strong>
+
+              <span>
+                Valid Tickets
+              </span>
+
+            </div>
+
+
+            <div class="stat">
+
+              <strong
+                id="usedTickets"
+              >
+                0
+              </strong>
+
+              <span>
+                Used Tickets
+              </span>
+
+            </div>
+
+
+          </div>
+
+        </section>
+
+
+
+        <!-- TICKET LIST -->
+
+        <section class="card">
+
+          <h2>
+            Tickets
+          </h2>
+
+
+          <div
+            id="ticketList"
+          >
+
+            <p>
+              No tickets available.
+            </p>
+
+          </div>
+
+        </section>
+
+
+
+        <!-- LOGOUT -->
+
+        <section class="card">
+
+          <button
+            id="adminLogout"
+            class="btn"
+          >
+            Logout
+          </button>
+
+        </section>
+
+
+      </section>
+
+
+    </div>
+
+  </main>
+
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="container">
+
+      <p>
+        © 2026 Meatopia
+      </p>
+
+    </div>
+
+  </footer>
+
+
+
+  <script src="script.js"></script>
+
 </body>
+
 </html>
