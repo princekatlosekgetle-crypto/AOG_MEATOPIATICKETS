@@ -120,4 +120,319 @@ READY
 
 <p>
 <strong>Status:</strong>
-<span id="displayStatus">PENDING</span
+<span id="displayStatus">PENDING</span>
+</p>
+
+<div
+  id="qrcode"
+  style="margin-top:20px;"
+></div>
+
+</section>
+
+
+</div>
+
+</main>
+
+
+<footer>
+<div class="container">
+<p>© 2026 Meatopia</p>
+</div>
+</footer>
+
+
+<!-- QR CODE -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://kqvekxywsyjuhjggwrpa.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+
+
+const message =
+document.getElementById("message");
+
+const form =
+document.getElementById("ticketForm");
+
+const button =
+document.getElementById("submitButton");
+
+
+message.textContent =
+"JavaScript is working. Supabase is loading...";
+
+
+/* CHECK SUPABASE */
+
+if (!window.supabase) {
+
+message.textContent =
+"ERROR: Supabase library did not load.";
+
+throw new Error(
+"Supabase library missing"
+);
+
+}
+
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+message.textContent =
+"READY — Supabase connected.";
+
+
+/* PRICES */
+
+const prices = {
+
+"Early Bird": 80,
+
+"Standard": 100,
+
+"Children": 50,
+
+"Group": 500
+
+};
+
+
+/* TICKET ID */
+
+function createTicketId() {
+
+return "MTP-" +
+Math.random()
+.toString(36)
+.substring(2,10)
+.toUpperCase();
+
+}
+
+
+/* FORM */
+
+form.addEventListener(
+"submit",
+async function(event) {
+
+event.preventDefault();
+
+
+message.textContent =
+"Button received. Creating ticket...";
+
+
+const name =
+document
+.getElementById("customerName")
+.value
+.trim();
+
+
+const type =
+document
+.getElementById("ticketType")
+.value;
+
+
+if (!name || !type) {
+
+message.textContent =
+"Please enter a name and select a ticket.";
+
+return;
+
+}
+
+
+const price =
+prices[type];
+
+
+const ticketId =
+createTicketId();
+
+
+button.disabled =
+true;
+
+
+button.textContent =
+"Creating...";
+
+
+message.textContent =
+"Saving " + ticketId + " to Supabase...";
+
+
+try {
+
+
+const response =
+await supabaseClient
+.from("Tickets.aog")
+.insert({
+
+ticket_id: ticketId,
+
+holder_name: name,
+
+ticket_type: type,
+
+price: price,
+
+status: "pending",
+
+event_date: "2026-09-30",
+
+venue: "Moshupa AOG"
+
+});
+
+
+console.log(
+"SUPABASE RESPONSE:",
+response
+);
+
+
+if (response.error) {
+
+message.textContent =
+"SUPABASE ERROR: " +
+response.error.message;
+
+console.error(
+response.error
+);
+
+button.disabled =
+false;
+
+button.textContent =
+"Submit Ticket Order";
+
+return;
+
+}
+
+
+/* SUCCESS */
+
+message.textContent =
+"SUCCESS! Ticket saved.";
+
+
+document.getElementById(
+"displayName"
+).textContent =
+name;
+
+
+document.getElementById(
+"displayType"
+).textContent =
+type;
+
+
+document.getElementById(
+"displayPrice"
+).textContent =
+"P" + price;
+
+
+document.getElementById(
+"displayTicketId"
+).textContent =
+ticketId;
+
+
+document.getElementById(
+"displayStatus"
+).textContent =
+"PENDING";
+
+
+document.getElementById(
+"ticketResult"
+).classList.remove(
+"hidden"
+);
+
+
+/* QR */
+
+document.getElementById(
+"qrcode"
+).innerHTML =
+"";
+
+
+new QRCode(
+
+document.getElementById(
+"qrcode"
+),
+
+{
+
+text: ticketId,
+
+width: 180,
+
+height: 180
+
+}
+
+);
+
+
+button.textContent =
+"Ticket Created";
+
+
+} catch (error) {
+
+
+console.error(error);
+
+
+message.textContent =
+"JAVASCRIPT ERROR: " +
+error.message;
+
+
+button.disabled =
+false;
+
+button.textContent =
+"Submit Ticket Order";
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
