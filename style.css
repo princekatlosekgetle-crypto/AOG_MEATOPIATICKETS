@@ -1,0 +1,374 @@
+/* Meatopia Online Tickets - Main Styles */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+  color: #111;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: 92%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* HEADER */
+
+header {
+  background: #111;
+  color: #fff;
+  padding: 18px 0;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.nav-links a:hover {
+  background: #333;
+}
+
+/* HERO */
+
+.hero {
+  padding: 70px 0;
+  text-align: center;
+  background: #181818;
+  color: #fff;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 7vw, 4rem);
+  margin-bottom: 15px;
+}
+
+.hero p {
+  max-width: 650px;
+  margin: 0 auto 25px;
+  color: #ddd;
+  line-height: 1.6;
+}
+
+/* BUTTONS */
+
+.btn {
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: 7px;
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-light {
+  background: #fff;
+  color: #111;
+}
+
+.btn-danger {
+  background: #c62828;
+}
+
+.btn-success {
+  background: #218838;
+}
+
+/* MAIN */
+
+main {
+  padding: 35px 0;
+}
+
+/* CARDS */
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
+}
+
+.card h2,
+.card h3 {
+  margin-bottom: 15px;
+}
+
+/* FORMS */
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #111;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* TICKET */
+
+.ticket {
+  max-width: 650px;
+  margin: 25px auto;
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.12);
+}
+
+.ticket-header {
+  background: #111;
+  color: #fff;
+  padding: 25px;
+  text-align: center;
+}
+
+.ticket-header h1 {
+  margin-bottom: 8px;
+}
+
+.ticket-body {
+  padding: 25px;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.ticket-row:last-child {
+  border-bottom: none;
+}
+
+.ticket-label {
+  color: #777;
+}
+
+.ticket-value {
+  font-weight: 700;
+  text-align: right;
+}
+
+/* QR CODE */
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.qr-container img {
+  max-width: 220px;
+  width: 100%;
+}
+
+/* STATUS MESSAGES */
+
+.status {
+  padding: 14px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.status-success {
+  background: #dff5e5;
+  color: #176b2c;
+}
+
+.status-error {
+  background: #fde1e1;
+  color: #9b1c1c;
+}
+
+.status-warning {
+  background: #fff1cc;
+  color: #7a5500;
+}
+
+/* ADMIN DASHBOARD */
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+}
+
+.stat h3 {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.stat strong {
+  font-size: 2rem;
+}
+
+/* TABLE */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  padding: 13px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background: #111;
+  color: #fff;
+}
+
+tr:hover {
+  background: #f8f8f8;
+}
+
+/* FOOTER */
+
+footer {
+  margin-top: 50px;
+  padding: 25px 0;
+  background: #111;
+  color: #aaa;
+  text-align: center;
+}
+
+/* UTILITY CLASSES */
+
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .nav {
+    flex-direction: column;
+  }
+
+  .nav-links {
+    justify-content: center;
+  }
+
+  .ticket-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .ticket-value {
+    text-align: left;
+  }
+
+  .hero {
+    padding: 50px 0;
+  }
+
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+                                                 }
