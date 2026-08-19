@@ -1,86 +1,240 @@
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
+  "use strict";
 
-  alert("MEATOPIA JAVASCRIPT IS WORKING");
+  const STORAGE_KEY = "meatopia_tickets";
 
-  const form = document.getElementById("ticketForm");
+  const TICKET_TYPES = {
+    "Early Bird": {
+      price: 80,
+      limit: 50
+    },
 
-  if (!form) {
-    alert("ERROR: ticketForm was not found");
-    return;
+    "Standard": {
+      price: 100,
+      limit: 150
+    },
+
+    "Children": {
+      price: 50,
+      limit: 50
+    },
+
+    "Group": {
+      price: 500,
+      limit: 20
+    }
+  };
+
+
+  // Get saved tickets
+  function getTickets() {
+
+    try {
+
+      const saved =
+        localStorage.getItem(STORAGE_KEY);
+
+      if (!saved) {
+        return [];
+      }
+
+      return JSON.parse(saved);
+
+    } catch (error) {
+
+      console.error(
+        "Could not load tickets:",
+        error
+      );
+
+      return [];
+
+    }
   }
 
-  alert("MEATOPIA FORM FOUND");
 
-  form.addEventListener("submit", function (event) {
+  // Save tickets
+  function saveTickets(tickets) {
 
-    event.preventDefault();
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(tickets)
+    );
 
-    alert("GENERATE BUTTON WORKS");
+  }
 
-    const name =
-      document.getElementById("customerName").value;
 
-    const type =
-      document.getElementById("ticketTypeInput").value;
+  // Generate unique Ticket ID
+  function generateTicketId() {
 
-    if (!name) {
-      alert("Please enter a name");
-      return;
+    const characters =
+      "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let id = "MTP-";
+
+    for (let i = 0; i < 8; i++) {
+
+      id += characters.charAt(
+        Math.floor(
+          Math.random() *
+          characters.length
+        )
+      );
+
     }
 
-    if (!type) {
-      alert("Please select a ticket type");
-      return;
+    return id;
+
+  }
+
+
+  // Check how many tickets of a type exist
+  function countTickets(type) {
+
+    return getTickets().filter(
+      function (ticket) {
+        return ticket.type === type;
+      }
+    ).length;
+
+  }
+
+
+  // Create ticket
+  function createTicket(name, type) {
+
+    if (!TICKET_TYPES[type]) {
+
+      alert(
+        "Please select a valid ticket type."
+      );
+
+      return null;
+
     }
 
-    const ticketId =
-      "MTP-" +
-      Math.random()
-        .toString(36)
-        .substring(2, 10)
-        .toUpperCase();
 
-    document.getElementById("ticketName").textContent =
-      name;
+    const sold =
+      countTickets(type);
 
-    document.getElementById("ticketType").textContent =
-      type;
 
-    document.getElementById("ticketId").textContent =
-      ticketId;
+    if (
+      sold >=
+      TICKET_TYPES[type].limit
+    ) {
 
-    document.getElementById("ticketStatus").textContent =
-      "VALID";
+      alert(
+        type + " tickets are sold out."
+      );
+
+      return null;
+
+    }
+
+
+    const tickets =
+      getTickets();
+
+
+    let ticketId;
+
+    do {
+
+      ticketId =
+        generateTicketId();
+
+    } while (
+
+      tickets.some(
+        function (ticket) {
+          return ticket.id === ticketId;
+        }
+      )
+
+    );
+
+
+    const ticket = {
+
+      id: ticketId,
+
+      name: name,
+
+      type: type,
+
+      price:
+        TICKET_TYPES[type].price,
+
+      status: "VALID",
+
+      event: "Meatopia",
+
+      date: "30 September 2026",
+
+      venue: "Moshupa AOG",
+
+      createdAt:
+        new Date().toISOString()
+
+    };
+
+
+    tickets.push(ticket);
+
+    saveTickets(tickets);
+
+    return ticket;
+
+  }
+
+
+  // Display generated ticket
+  function displayTicket(ticket) {
 
     const result =
-      document.getElementById("ticketResult");
+      document.getElementById(
+        "ticketResult"
+      );
 
-    result.classList.remove("hidden");
+    const name =
+      document.getElementById(
+        "ticketName"
+      );
 
-    result.scrollIntoView({
-      behavior: "smooth"
-    });
+    const type =
+      document.getElementById(
+        "ticketType"
+      );
+
+    const id =
+      document.getElementById(
+        "ticketId"
+      );
+
+    const status =
+      document.getElementById(
+        "ticketStatus"
+      );
 
     const qr =
-      document.getElementById("qrcode");
+      document.getElementById(
+        "qrcode"
+      );
 
-    qr.innerHTML = "";
 
-    if (typeof QRCode !== "undefined") {
+    if (name) {
 
-      new QRCode(qr, {
-        text: ticketId,
-        width: 180,
-        height: 180
-      });
-
-    } else {
-
-      qr.innerHTML =
-        "<p>QR library not loaded.</p>";
+      name.textContent =
+        ticket.name;
 
     }
 
-  });
 
-});
+    if (type) {
+
+      type.textContent =
+        ticket.type +
+        " — P" +
+        ticket.price;
+
+ }
