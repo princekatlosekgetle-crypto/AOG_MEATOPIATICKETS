@@ -12,15 +12,7 @@
 
   <title>Meatopia Online Tickets</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
-  <!-- QR CODE LIBRARY -->
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-  </script>
+  <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -28,405 +20,334 @@
 <body>
 
 
-<!-- =========================
-     HEADER
-========================= -->
+  <!-- HEADER -->
 
-<header>
+  <header>
 
-  <div class="container nav">
+    <div class="container nav">
 
-    <div class="logo">
-      MEATOPIA
+      <div class="logo">
+        MEATOPIA
+      </div>
+
+      <nav class="nav-links">
+
+        <a href="index.html">
+          Tickets
+        </a>
+
+        <a href="verify.html">
+          Verify
+        </a>
+
+        <a href="admin.html">
+          Admin
+        </a>
+
+      </nav>
+
     </div>
 
-
-    <nav class="nav-links">
-
-      <a href="index.html">
-        Tickets
-      </a>
-
-      <a href="verify.html">
-        Verify
-      </a>
-
-      <a href="admin.html">
-        Admin
-      </a>
-
-    </nav>
-
-  </div>
-
-</header>
+  </header>
 
 
 
-<!-- =========================
-     MAIN
-========================= -->
+  <!-- MAIN -->
 
-<main>
+  <main>
 
-  <div class="container">
+    <div class="container">
 
 
-    <!-- EVENT INFORMATION -->
+      <!-- EVENT -->
 
-    <section class="hero">
+      <section class="hero">
 
-      <h1>
-        MEATOPIA
-      </h1>
+        <h1>
+          MEATOPIA
+        </h1>
 
-      <p>
-        Official Online Tickets
-      </p>
+        <p>
+          OFFICIAL ONLINE TICKETS
+        </p>
 
-      <p>
-        30 September 2026
-        •
-        Moshupa AOG
-      </p>
+        <p>
+          30 September 2026
+          •
+          Moshupa AOG
+        </p>
 
-    </section>
+      </section>
 
 
 
-    <!-- =========================
-         TICKET FORM
-    ========================= -->
+      <!-- TICKET FORM -->
 
-    <section class="card">
+      <section class="card">
 
-      <h2>
-        Get Your Ticket
-      </h2>
+        <h2>
+          Get Your Ticket
+        </h2>
 
 
-      <form id="ticketForm">
+        <form id="ticketForm">
 
 
-        <!-- NAME -->
+          <!-- NAME -->
 
-        <div class="form-group">
+          <div class="form-group">
 
-          <label for="customerName">
+            <label for="customerName">
+              Ticket Holder Name
+            </label>
 
-            Ticket Holder Name
+            <input
+              type="text"
+              id="customerName"
+              name="customerName"
+              placeholder="Enter full name"
+              required
+            >
 
-          </label>
+          </div>
 
 
-          <input
 
-            type="text"
+          <!-- TICKET TYPE -->
 
-            id="customerName"
+          <div class="form-group">
 
-            placeholder="Enter full name"
+            <label for="ticketTypeInput">
+              Ticket Type
+            </label>
 
-            autocomplete="name"
+            <select
+              id="ticketTypeInput"
+              name="ticketType"
+              required
+            >
 
-            required
+              <option value="">
+                Select ticket type
+              </option>
 
+              <option value="Early Bird">
+                Early Bird — P80
+              </option>
+
+              <option value="Standard">
+                Standard — P100
+              </option>
+
+              <option value="Children">
+                Children — P50
+              </option>
+
+              <option value="Group">
+                Group — P500
+              </option>
+
+            </select>
+
+          </div>
+
+
+
+          <!-- GENERATE -->
+
+          <button
+            type="submit"
+            class="btn"
+            id="generateTicketButton"
           >
+            Generate Ticket
+          </button>
 
-        </div>
 
+        </form>
 
+      </section>
 
-        <!-- TICKET TYPE -->
 
-        <div class="form-group">
 
-          <label for="ticketTypeInput">
+      <!-- TICKET -->
 
-            Ticket Type
+      <section
+        id="ticketResult"
+        class="hidden"
+      >
 
-          </label>
 
+        <div class="ticket">
 
-          <select
 
-            id="ticketTypeInput"
+          <!-- TICKET TOP -->
 
-            required
+          <div class="ticket-header">
 
-          >
-
-            <option value="">
-
-              Select ticket type
-
-            </option>
-
-
-            <option value="Early Bird">
-
-              Early Bird — P80
-
-            </option>
-
-
-            <option value="Standard">
-
-              Standard — P100
-
-            </option>
-
-
-            <option value="Children">
-
-              Children — P50
-
-            </option>
-
-
-            <option value="Group">
-
-              Group — P500
-
-            </option>
-
-          </select>
-
-        </div>
-
-
-
-        <!-- GENERATE BUTTON -->
-
-        <button
-
-          type="submit"
-
-          class="btn"
-
-        >
-
-          Generate Ticket
-
-        </button>
-
-
-      </form>
-
-    </section>
-
-
-
-    <!-- =========================
-         GENERATED TICKET
-    ========================= -->
-
-    <section
-
-      id="ticketResult"
-
-      class="hidden"
-
-    >
-
-
-      <div class="ticket">
-
-
-        <!-- TICKET HEADER -->
-
-        <div class="ticket-header">
-
-          <h1>
-            MEATOPIA
-          </h1>
-
-          <p>
-            OFFICIAL EVENT TICKET
-          </p>
-
-        </div>
-
-
-
-        <!-- TICKET INFORMATION -->
-
-        <div class="ticket-body">
-
-
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-
-              Name
-
-            </span>
-
-
-            <span
-
-              id="ticketName"
-
-              class="ticket-value"
-
-            ></span>
-
-          </div>
-
-
-
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-
-              Ticket
-
-            </span>
-
-
-            <span
-
-              id="ticketType"
-
-              class="ticket-value"
-
-            ></span>
-
-          </div>
-
-
-
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-
-              Ticket ID
-
-            </span>
-
-
-            <span
-
-              id="ticketId"
-
-              class="ticket-value"
-
-            ></span>
-
-          </div>
-
-
-
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-
-              Date
-
-            </span>
-
-
-            <span class="ticket-value">
-
-              30/09/2026
-
-            </span>
-
-          </div>
-
-
-
-          <div class="ticket-row">
-
-            <span class="ticket-label">
-
-              Venue
-
-            </span>
-
-
-            <span class="ticket-value">
-
-              Moshupa AOG
-
-            </span>
-
-          </div>
-
-
-
-          <!-- QR CODE -->
-
-          <div class="qr-container">
-
-            <div id="qrcode"></div>
-
-          </div>
-
-
-
-          <!-- STATUS -->
-
-          <div class="text-center">
-
-            <strong id="ticketStatus">
-
-              VALID
-
-            </strong>
-
+            <h1>
+              MEATOPIA
+            </h1>
 
             <p>
-
-              Scan the QR code to verify
-              this ticket.
-
+              OFFICIAL EVENT TICKET
             </p>
 
           </div>
 
 
+
+          <!-- TICKET INFORMATION -->
+
+          <div class="ticket-body">
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
+                Ticket Holder
+              </span>
+
+              <span
+                id="ticketName"
+                class="ticket-value"
+              >
+              </span>
+
+            </div>
+
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
+                Ticket Type
+              </span>
+
+              <span
+                id="ticketType"
+                class="ticket-value"
+              >
+              </span>
+
+            </div>
+
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
+                Ticket ID
+              </span>
+
+              <span
+                id="ticketId"
+                class="ticket-value"
+              >
+              </span>
+
+            </div>
+
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
+                Event Date
+              </span>
+
+              <span class="ticket-value">
+                30 September 2026
+              </span>
+
+            </div>
+
+
+
+            <div class="ticket-row">
+
+              <span class="ticket-label">
+                Venue
+              </span>
+
+              <span class="ticket-value">
+                Moshupa AOG
+              </span>
+
+            </div>
+
+
+
+            <!-- QR -->
+
+            <div class="qr-container">
+
+              <div id="qrcode"></div>
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="text-center">
+
+              <strong
+                id="ticketStatus"
+              >
+                VALID
+              </strong>
+
+              <p>
+                Scan this QR code to verify
+                the ticket.
+              </p>
+
+            </div>
+
+
+          </div>
+
         </div>
 
-      </div>
+
+      </section>
 
 
-    </section>
+    </div>
 
-
-  </div>
-
-</main>
-
-
-
-<!-- =========================
-     FOOTER
-========================= -->
-
-<footer>
-
-  <div class="container">
-
-    <p>
-
-      © 2026 Meatopia
-
-    </p>
-
-  </div>
-
-</footer>
+  </main>
 
 
 
-<!-- =========================
-     JAVASCRIPT
-========================= -->
+  <!-- FOOTER -->
 
-<script src="script.js"></script>
+  <footer>
+
+    <div class="container">
+
+      <p>
+        © 2026 Meatopia
+      </p>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- QR CODE LIBRARY -->
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+  </script>
+
+
+  <!-- MEATOPIA SCRIPT -->
+
+  <script src="script.js"></script>
 
 
 </body>
 
-</html>
+              </html>
