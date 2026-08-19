@@ -1,317 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Meatopia | Official Tickets</title>
-
+<title>Meatopia Tickets</title>
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
-
 <header>
+  <div class="container nav">
+    <div class="logo">MEATOPIA</div>
 
-<div class="container nav">
-
-<div class="logo">
-MEATOPIA
-</div>
-
-
-<nav class="nav-links">
-
-<a href="index.html">
-Tickets
-</a>
-
-<a href="verify.html">
-Verify
-</a>
-
-<a href="admin.html">
-Admin
-</a>
-
-</nav>
-
-</div>
-
+    <nav class="nav-links">
+      <a href="index.html">Tickets</a>
+      <a href="verify.html">Verify</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </div>
 </header>
-
 
 
 <main>
 
 <div class="container">
 
-
 <section class="hero">
-
-<h1>
-MEATOPIA
-</h1>
-
-<p>
-OFFICIAL ONLINE TICKETS
-</p>
-
-<p>
-30 September 2026 • Moshupa AOG
-</p>
-
+  <h1>MEATOPIA</h1>
+  <p>OFFICIAL ONLINE TICKETS</p>
+  <p>30 September 2026 • Moshupa AOG</p>
 </section>
-
 
 
 <section class="card">
 
-<h2>
-Get Your Ticket
-</h2>
-
-<p>
-Enter the ticket holder's name and select a ticket type.
-</p>
-
+<h2>Get Your Ticket</h2>
 
 <form id="ticketForm">
 
-
 <div class="form-group">
-
-<label for="customerName">
-Ticket Holder Name
-</label>
+<label>Ticket Holder Name</label>
 
 <input
-type="text"
-id="customerName"
-placeholder="Enter full name"
-required
+  id="customerName"
+  type="text"
+  placeholder="Enter full name"
+  required
 >
-
 </div>
-
 
 
 <div class="form-group">
+<label>Ticket Type</label>
 
-<label for="ticketType">
-Ticket Type
-</label>
+<select id="ticketType" required>
 
-<select
-id="ticketType"
-required
->
+<option value="">Select ticket type</option>
 
-<option value="">
-Select ticket type
-</option>
+<option value="Early Bird">Early Bird — P80</option>
 
-<option value="Early Bird">
-Early Bird — P80
-</option>
+<option value="Standard">Standard — P100</option>
 
-<option value="Standard">
-Standard — P100
-</option>
+<option value="Children">Children — P50</option>
 
-<option value="Children">
-Children — P50
-</option>
-
-<option value="Group">
-Group — P500
-</option>
+<option value="Group">Group — P500</option>
 
 </select>
-
 </div>
-
 
 
 <button
-type="submit"
-class="btn"
-id="submitButton"
+  type="submit"
+  class="btn"
+  id="submitButton"
 >
-
 Submit Ticket Order
-
 </button>
-
 
 </form>
 
 
-<p id="message"></p>
-
+<div
+  id="message"
+  style="margin-top:20px;font-weight:bold;"
+>
+READY
+</div>
 
 </section>
-
 
 
 <section
-id="ticketResult"
-class="hidden"
+  id="ticketResult"
+  class="card hidden"
 >
 
-
-<div class="ticket">
-
-
-<div class="ticket-header">
-
-<h1>
-MEATOPIA
-</h1>
+<h2>Ticket Created</h2>
 
 <p>
-OFFICIAL EVENT TICKET
+<strong>Holder:</strong>
+<span id="displayName"></span>
 </p>
-
-</div>
-
-
-
-<div class="ticket-body">
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Ticket Holder
-</span>
-
-<span
-id="displayName"
-class="ticket-value"
-></span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Ticket Type
-</span>
-
-<span
-id="displayType"
-class="ticket-value"
-></span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Price
-</span>
-
-<span
-id="displayPrice"
-class="ticket-value"
-></span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Ticket ID
-</span>
-
-<span
-id="displayTicketId"
-class="ticket-value"
-></span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Event
-</span>
-
-<span class="ticket-value">
-Meatopia
-</span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Date
-</span>
-
-<span class="ticket-value">
-30 September 2026
-</span>
-
-</div>
-
-
-
-<div class="ticket-row">
-
-<span class="ticket-label">
-Venue
-</span>
-
-<span class="ticket-value">
-Moshupa AOG
-</span>
-
-</div>
-
-
-
-<div class="qr-container">
-
-<div id="qrcode"></div>
-
-</div>
-
-
-
-<div class="text-center">
-
-<strong id="displayStatus">
-PAYMENT PENDING
-</strong>
 
 <p>
-Complete payment and wait for verification.
+<strong>Type:</strong>
+<span id="displayType"></span>
 </p>
 
-</div>
+<p>
+<strong>Price:</strong>
+<span id="displayPrice"></span>
+</p>
 
+<p>
+<strong>Ticket ID:</strong>
+<span id="displayTicketId"></span>
+</p>
 
-</div>
-
-</div>
-
-
-</section>
+<p>
+<strong>Status:</strong>
+<span id="displayStatus">PENDING</span
