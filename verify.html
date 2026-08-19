@@ -5,17 +5,11 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Meatopia | Ticket Verification</title>
+<title>Meatopia | Staff Verification</title>
 
-<link
-  rel="stylesheet"
-  href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -31,20 +25,13 @@
 MEATOPIA
 </div>
 
-
 <nav class="nav-links">
 
-<a href="index.html">
-Tickets
-</a>
+<a href="index.html">Tickets</a>
 
-<a href="verify.html">
-Verify
-</a>
+<a href="verify.html">Verify</a>
 
-<a href="admin.html">
-Admin
-</a>
+<a href="admin.html">Admin</a>
 
 </nav>
 
@@ -59,18 +46,97 @@ Admin
 <div class="container">
 
 
-<section class="hero">
+<!-- LOGIN -->
+
+<section
+id="loginSection"
+class="card"
+>
 
 <h1>
-STAFF VERIFICATION
+Staff Login
 </h1>
 
 <p>
-MEATOPIA • 30 SEPTEMBER 2026
+Authorized staff only.
+</p>
+
+
+<form id="loginForm">
+
+
+<div class="form-group">
+
+<label for="email">
+Email
+</label>
+
+<input
+id="email"
+type="email"
+placeholder="Staff email"
+required
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label for="password">
+Password
+</label>
+
+<input
+id="password"
+type="password"
+placeholder="Password"
+required
+>
+
+</div>
+
+
+<button
+type="submit"
+class="btn"
+id="loginButton"
+>
+
+Staff Login
+
+</button>
+
+
+</form>
+
+
+<p id="loginMessage"></p>
+
+</section>
+
+
+
+<!-- VERIFICATION -->
+
+<section
+id="verificationSection"
+class="hidden"
+>
+
+
+<section class="hero">
+
+<h1>
+TICKET VERIFICATION
+</h1>
+
+<p>
+Meatopia • 30 September 2026
 </p>
 
 <p>
-MOSHUPA AOG
+Moshupa AOG
 </p>
 
 </section>
@@ -84,7 +150,7 @@ Verify Ticket
 </h2>
 
 <p>
-Enter the unique Ticket ID below.
+Enter the Ticket ID.
 </p>
 
 
@@ -94,17 +160,13 @@ Enter the unique Ticket ID below.
 <div class="form-group">
 
 <label for="ticketId">
-
 Ticket ID
-
 </label>
-
 
 <input
 id="ticketId"
 type="text"
-placeholder="Example: MTP-ABCD1234"
-autocomplete="off"
+placeholder="MTP-XXXXXXXX"
 required
 >
 
@@ -121,15 +183,31 @@ Verify Ticket
 
 </button>
 
-
 </form>
 
 
 <div
-id="result"
-style="margin-top:25px;"
+id="verificationResult"
+style="margin-top:20px;"
+></div>
+
+</section>
+
+
+
+<section class="card">
+
+<button
+id="logoutButton"
+class="btn"
+type="button"
 >
-</div>
+
+Logout
+
+</button>
+
+</section>
 
 
 </section>
@@ -155,14 +233,14 @@ style="margin-top:25px;"
 
 
 
-<!-- SUPABASE -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
 
 <script>
 
+
+/* SUPABASE */
 
 const SUPABASE_URL =
 "https://kqvekxywsyjuhjggwrpa.supabase.co";
@@ -180,53 +258,191 @@ SUPABASE_KEY
 
 
 
-const form =
+/* ELEMENTS */
+
+const loginSection =
 document.getElementById(
+"loginSection"
+);
+
+const verificationSection =
+document.getElementById(
+"verificationSection"
+);
+
+const loginForm =
+document.getElementById(
+"loginForm"
+);
+
+const loginMessage =
+document.getElementById(
+"loginMessage"
+);
+
+const verificationResult =
+document.getElementById(
+"verificationResult"
+);
+
+
+
+/* CHECK SESSION */
+
+async function checkSession() {
+
+const {
+data
+} =
+await supabaseClient.auth.getSession();
+
+
+if (data.session) {
+
+showVerification();
+
+} else {
+
+showLogin();
+
+}
+
+}
+
+
+
+/* SHOW LOGIN */
+
+function showLogin() {
+
+loginSection.classList.remove(
+"hidden"
+);
+
+verificationSection.classList.add(
+"hidden"
+);
+
+}
+
+
+
+/* SHOW VERIFICATION */
+
+function showVerification() {
+
+loginSection.classList.add(
+"hidden"
+);
+
+verificationSection.classList.remove(
+"hidden"
+);
+
+}
+
+
+
+/* LOGIN */
+
+loginForm.addEventListener(
+"submit",
+async function(event) {
+
+event.preventDefault();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+const button =
+document.getElementById(
+"loginButton"
+);
+
+
+button.disabled =
+true;
+
+button.textContent =
+"Logging in...";
+
+
+loginMessage.textContent =
+"";
+
+
+const {
+data,
+error
+} =
+await supabaseClient.auth.signInWithPassword({
+
+email: email,
+
+password: password
+
+});
+
+
+if (error) {
+
+loginMessage.textContent =
+error.message;
+
+button.disabled =
+false;
+
+button.textContent =
+"Staff Login";
+
+return;
+
+}
+
+
+showVerification();
+
+}
+);
+
+
+
+/* VERIFY TICKET */
+
+document
+.getElementById(
 "verifyForm"
-);
+)
+.addEventListener(
+"submit",
+async function(event) {
+
+event.preventDefault();
 
 
-const input =
-document.getElementById(
-"ticketId"
-);
-
-
-const result =
-document.getElementById(
-"result"
-);
+const ticketId =
+document
+.getElementById("ticketId")
+.value
+.trim()
+.toUpperCase();
 
 
 const button =
 document.getElementById(
 "verifyButton"
 );
-
-
-
-form.addEventListener(
-"submit",
-async function(event) {
-
-
-event.preventDefault();
-
-
-const ticketId =
-input.value
-.trim()
-.toUpperCase();
-
-
-if (!ticketId) {
-
-result.innerHTML =
-"<p>Please enter a Ticket ID.</p>";
-
-return;
-
-}
 
 
 button.disabled =
@@ -236,9 +452,8 @@ button.textContent =
 "Checking...";
 
 
-result.innerHTML =
+verificationResult.innerHTML =
 "<p>Checking ticket...</p>";
-
 
 
 const {
@@ -255,28 +470,12 @@ ticketId
 .maybeSingle();
 
 
-
 if (error) {
 
-console.error(error);
-
-
-result.innerHTML = `
-
-<div class="card">
-
-<h2>
-Verification Error
-</h2>
-
-<p>
-${escapeHtml(error.message)}
-</p>
-
-</div>
-
-`;
-
+verificationResult.innerHTML =
+"<p><strong>Error:</strong> " +
+escapeHtml(error.message) +
+"</p>";
 
 button.disabled =
 false;
@@ -289,10 +488,9 @@ return;
 }
 
 
-
 if (!data) {
 
-result.innerHTML = `
+verificationResult.innerHTML = `
 
 <div class="card">
 
@@ -301,15 +499,16 @@ result.innerHTML = `
 </h2>
 
 <p>
-No ticket with ID
-<strong>${escapeHtml(ticketId)}</strong>
-was found.
+No ticket was found with ID:
 </p>
+
+<strong>
+${escapeHtml(ticketId)}
+</strong>
 
 </div>
 
 `;
-
 
 button.disabled =
 false;
@@ -320,7 +519,6 @@ button.textContent =
 return;
 
 }
-
 
 
 const status =
@@ -331,140 +529,15 @@ data.status
 
 
 
-if (status === "pending") {
+/* PENDING */
 
+if (
+status === "pending"
+) {
 
-result.innerHTML = `
-
-<div class="card">
-
-<h2>
-🟡 PAYMENT PENDING
-</h2>
-
-<p>
-<strong>${escapeHtml(data.holder_name)}</strong>
-</p>
-
-<p>
-Ticket ID:
-<strong>${escapeHtml(data.ticket_id)}</strong>
-</p>
-
-<p>
-Ticket Type:
-${escapeHtml(data.ticket_type)}
-</p>
-
-<p>
-This ticket has not been approved for entry.
-</p>
-
-</div>
-
-`;
-
-}
-
-
-
-else if (status === "valid") {
-
-
-result.innerHTML = `
+verificationResult.innerHTML = `
 
 <div class="card">
 
 <h2>
-🟢 VALID TICKET
-</h2>
-
-<p>
-<strong>${escapeHtml(data.holder_name)}</strong>
-</p>
-
-<p>
-Ticket ID:
-<strong>${escapeHtml(data.ticket_id)}</strong>
-</p>
-
-<p>
-Ticket Type:
-${escapeHtml(data.ticket_type)}
-</p>
-
-<p>
-Price:
-P${escapeHtml(data.price)}
-</p>
-
-<p>
-Event:
-Meatopia
-</p>
-
-<p>
-30 September 2026
-</p>
-
-<p>
-Moshupa AOG
-</p>
-
-<button
-class="btn"
-id="useTicketButton"
-type="button"
->
-MARK TICKET AS USED
-</button>
-
-</div>
-
-`;
-
-
-document
-.getElementById(
-"useTicketButton"
-)
-.addEventListener(
-"click",
-function() {
-
-markTicketUsed(
-data.ticket_id
-);
-
-});
-
-}
-
-
-
-else if (status === "used") {
-
-
-result.innerHTML = `
-
-<div class="card">
-
-<h2>
-🔴 TICKET ALREADY USED
-</h2>
-
-<p>
-<strong>${escapeHtml(data.holder_name)}</strong>
-</p>
-
-<p>
-Ticket ID:
-<strong>${escapeHtml(data.ticket_id)}</strong>
-</p>
-
-<p>
-This ticket has already been used.
-</p>
-
-<p>
-<strong
+🟡
