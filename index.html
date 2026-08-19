@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -16,16 +15,13 @@
     rel="stylesheet"
     href="style.css"
   >
-
 </head>
 
 
 <body>
 
 
-  <!-- =========================
-       HEADER
-  ========================== -->
+  <!-- HEADER -->
 
   <header>
 
@@ -35,10 +31,19 @@
         MEATOPIA
       </div>
 
+
       <nav class="nav-links">
 
         <a href="index.html">
           Tickets
+        </a>
+
+        <a href="verify.html">
+          Verify
+        </a>
+
+        <a href="admin.html">
+          Admin
         </a>
 
       </nav>
@@ -49,9 +54,7 @@
 
 
 
-  <!-- =========================
-       MAIN
-  ========================== -->
+  <!-- MAIN -->
 
   <main>
 
@@ -80,9 +83,7 @@
 
 
 
-      <!-- =========================
-           TICKET FORM
-      ========================== -->
+      <!-- CUSTOMER TICKET FORM -->
 
       <section class="card">
 
@@ -99,90 +100,55 @@
         <form id="ticketForm">
 
 
-          <!-- NAME -->
-
           <div class="form-group">
 
             <label for="customerName">
-
               Ticket Holder Name
-
             </label>
 
-
             <input
-
               type="text"
-
               id="customerName"
-
               name="customerName"
-
               placeholder="Enter full name"
-
               autocomplete="name"
-
               required
-
             >
 
           </div>
 
 
 
-          <!-- TICKET TYPE -->
-
           <div class="form-group">
 
             <label for="ticketTypeInput">
-
               Ticket Type
-
             </label>
 
-
             <select
-
               id="ticketTypeInput"
-
               name="ticketType"
-
               required
-
             >
 
               <option value="">
-
                 Select ticket type
-
               </option>
-
 
               <option value="Early Bird">
-
                 Early Bird — P80
-
               </option>
-
 
               <option value="Standard">
-
                 Standard — P100
-
               </option>
-
 
               <option value="Children">
-
                 Children — P50
-
               </option>
 
-
               <option value="Group">
-
                 Group — P500
-
               </option>
 
             </select>
@@ -191,20 +157,12 @@
 
 
 
-          <!-- GENERATE BUTTON -->
-
           <button
-
             type="submit"
-
             class="btn"
-
             id="generateTicketButton"
-
           >
-
             Generate Ticket
-
           </button>
 
 
@@ -214,23 +172,15 @@
 
 
 
-      <!-- =========================
-           GENERATED TICKET
-      ========================== -->
+      <!-- GENERATED TICKET -->
 
       <section
-
         id="ticketResult"
-
         class="hidden"
-
       >
-
 
         <div class="ticket">
 
-
-          <!-- TICKET HEADER -->
 
           <div class="ticket-header">
 
@@ -246,26 +196,18 @@
 
 
 
-          <!-- TICKET DETAILS -->
-
           <div class="ticket-body">
 
 
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Ticket Holder
-
               </span>
 
-
               <span
-
                 id="ticketName"
-
                 class="ticket-value"
-
               ></span>
 
             </div>
@@ -275,18 +217,12 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Ticket Type
-
               </span>
 
-
               <span
-
                 id="ticketType"
-
                 class="ticket-value"
-
               ></span>
 
             </div>
@@ -296,18 +232,12 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Ticket ID
-
               </span>
-
 
               <span
-
                 id="ticketId"
-
                 class="ticket-value"
-
               ></span>
 
             </div>
@@ -317,16 +247,11 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Event
-
               </span>
 
-
               <span class="ticket-value">
-
                 Meatopia
-
               </span>
 
             </div>
@@ -336,16 +261,11 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Date
-
               </span>
-
 
               <span class="ticket-value">
-
                 30 September 2026
-
               </span>
 
             </div>
@@ -355,10 +275,120 @@
             <div class="ticket-row">
 
               <span class="ticket-label">
-
                 Venue
-
               </span>
 
+              <span class="ticket-value">
+                Moshupa AOG
+              </span>
 
-              <
+            </div>
+
+
+
+            <!-- QR CODE -->
+
+            <div class="qr-container">
+
+              <div id="qrcode"></div>
+
+            </div>
+
+
+
+            <div class="text-center">
+
+              <strong id="ticketStatus">
+                VALID
+              </strong>
+
+              <p>
+                This ticket contains a
+                unique identification code.
+              </p>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- STAFF AREA -->
+
+      <section class="card">
+
+        <h2>
+          Staff Area
+        </h2>
+
+        <p>
+          Authorized staff only.
+        </p>
+
+
+        <div class="staff-buttons">
+
+
+          <a
+            href="verify.html"
+            class="btn"
+          >
+            Staff Ticket Verification
+          </a>
+
+
+          <a
+            href="admin.html"
+            class="btn"
+          >
+            Staff Admin Login
+          </a>
+
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+  </main>
+
+
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="container">
+
+      <p>
+        © 2026 Meatopia
+      </p>
+
+    </div>
+
+  </footer>
+
+
+
+  <!-- QR CODE LIBRARY -->
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
+  </script>
+
+
+  <!-- MEATOPIA JAVASCRIPT -->
+
+  <script src="script.js"></script>
+
+
+</body>
+
+</html>
