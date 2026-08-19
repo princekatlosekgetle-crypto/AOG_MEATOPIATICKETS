@@ -5,17 +5,11 @@
 
 <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Meatopia | Admin</title>
 
-<link
-  rel="stylesheet"
-  href="style.css"
->
+<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -31,20 +25,13 @@
 MEATOPIA
 </div>
 
-
 <nav class="nav-links">
 
-<a href="index.html">
-Tickets
-</a>
+<a href="index.html">Tickets</a>
 
-<a href="verify.html">
-Verify
-</a>
+<a href="verify.html">Verify</a>
 
-<a href="admin.html">
-Admin
-</a>
+<a href="admin.html">Admin</a>
 
 </nav>
 
@@ -61,10 +48,7 @@ Admin
 
 <!-- LOGIN -->
 
-<section
-id="loginSection"
-class="card"
->
+<section id="loginSection" class="card">
 
 <h1>
 Staff Admin Login
@@ -95,7 +79,6 @@ required
 </div>
 
 
-
 <div class="form-group">
 
 <label for="password">
@@ -111,7 +94,6 @@ required
 >
 
 </div>
-
 
 
 <button
@@ -136,10 +118,7 @@ Login
 
 <!-- DASHBOARD -->
 
-<section
-id="dashboard"
-class="hidden"
->
+<section id="dashboard" class="hidden">
 
 
 <section class="hero">
@@ -156,7 +135,7 @@ Meatopia Ticket Management
 
 
 
-<!-- STATS -->
+<!-- STATISTICS -->
 
 <section class="card">
 
@@ -181,7 +160,6 @@ Total
 </div>
 
 
-
 <div class="stat">
 
 <strong id="pendingTickets">
@@ -195,7 +173,6 @@ Pending
 </div>
 
 
-
 <div class="stat">
 
 <strong id="validTickets">
@@ -207,7 +184,6 @@ Valid
 </span>
 
 </div>
-
 
 
 <div class="stat">
@@ -238,7 +214,7 @@ style="display:flex;justify-content:space-between;align-items:center;gap:10px;"
 >
 
 <h2>
-Tickets
+All Tickets
 </h2>
 
 
@@ -267,9 +243,27 @@ Loading tickets...
 
 
 
-<!-- LOGOUT -->
+<!-- NAVIGATION -->
 
 <section class="card">
+
+<h2>
+Staff Tools
+</h2>
+
+
+<a
+href="verify.html"
+class="btn"
+>
+
+Open Ticket Verification
+
+</a>
+
+
+<br><br>
+
 
 <button
 id="logoutButton"
@@ -307,10 +301,7 @@ Logout
 
 
 
-<!-- SUPABASE -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 
 
 <script>
@@ -326,8 +317,27 @@ const SUPABASE_KEY =
 
 const supabaseClient =
 window.supabase.createClient(
+
 SUPABASE_URL,
-SUPABASE_KEY
+
+SUPABASE_KEY,
+
+{
+
+auth: {
+
+persistSession: true,
+
+autoRefreshToken: true,
+
+detectSessionInUrl: true,
+
+storage: window.localStorage
+
+}
+
+}
+
 );
 
 
@@ -363,36 +373,7 @@ document.getElementById(
 
 
 
-/* CHECK LOGIN */
-
-
-async function checkLogin() {
-
-
-const {
-data
-} =
-await supabaseClient.auth.getSession();
-
-
-if (
-data.session
-) {
-
-showDashboard();
-
-} else {
-
-showLogin();
-
-}
-
-}
-
-
-
 /* SHOW LOGIN */
-
 
 function showLogin() {
 
@@ -410,7 +391,6 @@ dashboard.classList.add(
 
 /* SHOW DASHBOARD */
 
-
 function showDashboard() {
 
 loginSection.classList.add(
@@ -427,11 +407,38 @@ loadTickets();
 
 
 
+/* CHECK SESSION */
+
+async function checkSession() {
+
+const {
+data
+} =
+await supabaseClient.auth.getSession();
+
+
+if (data.session) {
+
+showDashboard();
+
+}
+
+else {
+
+showLogin();
+
+}
+
+}
+
+
+
 /* LOGIN */
 
-
 loginForm.addEventListener(
+
 "submit",
+
 async function(event) {
 
 event.preventDefault();
@@ -456,9 +463,7 @@ document.getElementById(
 );
 
 
-button.disabled =
-true;
-
+button.disabled = true;
 
 button.textContent =
 "Logging in...";
@@ -469,7 +474,6 @@ loginMessage.textContent =
 
 
 const {
-data,
 error
 } =
 await supabaseClient.auth.signInWithPassword({
@@ -486,8 +490,7 @@ if (error) {
 loginMessage.textContent =
 error.message;
 
-button.disabled =
-false;
+button.disabled = false;
 
 button.textContent =
 "Login";
@@ -499,14 +502,13 @@ return;
 
 showDashboard();
 
-
 }
+
 );
 
 
 
 /* LOAD TICKETS */
-
 
 async function loadTickets() {
 
@@ -520,8 +522,11 @@ data: tickets,
 error
 } =
 await supabaseClient
+
 .from("Tickets.aog")
+
 .select("*")
+
 .order(
 "created_at",
 {
@@ -533,11 +538,9 @@ ascending: false
 if (error) {
 
 ticketList.innerHTML =
-"<p>Unable to load tickets: " +
-error.message +
+"<p>Error loading tickets: " +
+escapeHtml(error.message) +
 "</p>";
-
-console.error(error);
 
 return;
 
@@ -562,11 +565,14 @@ return;
 }
 
 
-ticketList.innerHTML = "";
+ticketList.innerHTML =
+"";
 
 
 tickets.forEach(
+
 function(ticket) {
+
 
 const card =
 document.createElement(
@@ -587,6 +593,51 @@ String(
 ticket.status || ""
 )
 .toLowerCase();
+
+
+let buttons = "";
+
+
+if (
+status === "pending"
+) {
+
+buttons = `
+
+<button
+class="btn approveButton"
+data-id="${escapeHtml(ticket.ticket_id)}"
+type="button"
+>
+
+Approve Payment
+
+</button>
+
+`;
+
+}
+
+
+if (
+status === "valid"
+) {
+
+buttons = `
+
+<button
+class="btn usedButton"
+data-id="${escapeHtml(ticket.ticket_id)}"
+type="button"
+>
+
+Mark Used
+
+</button>
+
+`;
+
+}
 
 
 card.innerHTML = `
@@ -625,51 +676,9 @@ ${escapeHtml(ticket.event_date)}
 ${escapeHtml(ticket.venue)}
 </p>
 
-<div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+<div style="margin-top:15px;">
 
-${
-status === "pending"
-?
-
-`
-
-<button
-class="btn approve-button"
-data-id="${escapeHtml(ticket.ticket_id)}"
-type="button"
->
-Approve Payment
-</button>
-
-`
-
-:
-
-""
-
-}
-
-${
-status === "valid"
-?
-
-`
-
-<button
-class="btn used-button"
-data-id="${escapeHtml(ticket.ticket_id)}"
-type="button"
->
-Mark Used
-</button>
-
-`
-
-:
-
-""
-
-}
+${buttons}
 
 </div>
 
@@ -684,13 +693,11 @@ card
 
 );
 
-
 }
 
 
 
 /* STATISTICS */
-
 
 function updateStatistics(
 tickets
@@ -705,7 +712,9 @@ let used = 0;
 
 
 tickets.forEach(
+
 function(ticket) {
+
 
 const status =
 String(
@@ -716,29 +725,17 @@ ticket.status || ""
 
 if (
 status === "pending"
-) {
-
-pending++;
-
-}
+) pending++;
 
 
 if (
 status === "valid"
-) {
-
-valid++;
-
-}
+) valid++;
 
 
 if (
 status === "used"
-) {
-
-used++;
-
-}
+) used++;
 
 });
 
@@ -770,11 +767,12 @@ used;
 
 
 
-/* APPROVE / MARK USED */
-
+/* BUTTONS */
 
 ticketList.addEventListener(
+
 "click",
+
 async function(event) {
 
 
@@ -784,9 +782,7 @@ event.target.closest(
 );
 
 
-if (!button) {
-return;
-}
+if (!button) return;
 
 
 const ticketId =
@@ -795,7 +791,7 @@ button.dataset.id;
 
 if (
 button.classList.contains(
-"approve-button"
+"approveButton"
 )
 ) {
 
@@ -809,7 +805,7 @@ ticketId,
 
 if (
 button.classList.contains(
-"used-button"
+"usedButton"
 )
 ) {
 
@@ -820,44 +816,46 @@ ticketId,
 
 }
 
-});
+}
+
+);
 
 
 
 /* CHANGE STATUS */
 
-
 async function changeStatus(
 ticketId,
-newStatus
+status
 ) {
 
 
 const confirmed =
 confirm(
-"Change ticket " +
+"Change " +
 ticketId +
 " to " +
-newStatus +
+status +
 "?"
 );
 
 
-if (!confirmed) {
-return;
-}
+if (!confirmed) return;
 
 
 const {
 error
 } =
 await supabaseClient
+
 .from("Tickets.aog")
+
 .update({
 
-status: newStatus
+status: status
 
 })
+
 .eq(
 "ticket_id",
 ticketId
@@ -871,8 +869,6 @@ alert(
 error.message
 );
 
-console.error(error);
-
 return;
 
 }
@@ -884,60 +880,16 @@ loadTickets();
 
 
 
-/* ESCAPE HTML */
-
-
-function escapeHtml(
-value
-) {
-
-return String(
-value ?? ""
-)
-.replace(
-/&/g,
-"&amp;"
-)
-.replace(
-/</g,
-"&lt;"
-)
-.replace(
-/>/g,
-"&gt;"
-)
-.replace(
-/"/g,
-"&quot;"
-)
-.replace(
-/'/g,
-"&#039;"
-);
-
-}
-
-
-
-/* REFRESH */
-
-
-document.getElementById(
-"refreshButton"
-).addEventListener(
-"click",
-loadTickets
-);
-
-
-
 /* LOGOUT */
 
-
-document.getElementById(
+document
+.getElementById(
 "logoutButton"
-).addEventListener(
+)
+.addEventListener(
+
 "click",
+
 async function() {
 
 await supabaseClient.auth.signOut();
@@ -945,18 +897,53 @@ await supabaseClient.auth.signOut();
 showLogin();
 
 }
+
 );
+
+
+
+/* REFRESH */
+
+document
+.getElementById(
+"refreshButton"
+)
+.addEventListener(
+
+"click",
+
+loadTickets
+
+);
+
+
+
+/* ESCAPE */
+
+function escapeHtml(value) {
+
+return String(value ?? "")
+
+.replace(/&/g, "&amp;")
+
+.replace(/</g, "&lt;")
+
+.replace(/>/g, "&gt;")
+
+.replace(/"/g, "&quot;")
+
+.replace(/'/g, "&#039;");
+
+}
 
 
 
 /* START */
 
-
-checkLogin();
+checkSession();
 
 
 </script>
-
 
 </body>
 
