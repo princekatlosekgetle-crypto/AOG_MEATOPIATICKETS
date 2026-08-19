@@ -3,19 +3,19 @@
 
 <head>
 
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
-  <title>Meatopia | Staff Verification</title>
+<title>Meatopia | Ticket Verification</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+<link
+  rel="stylesheet"
+  href="style.css"
+>
 
 </head>
 
@@ -23,162 +23,448 @@
 <body>
 
 
-  <!-- HEADER -->
+<header>
 
-  <header>
+<div class="container nav">
 
-    <div class="container nav">
-
-      <div class="logo">
-        MEATOPIA
-      </div>
+<div class="logo">
+MEATOPIA
+</div>
 
 
-      <nav class="nav-links">
+<nav class="nav-links">
 
-        <a href="index.html">
-          Tickets
-        </a>
+<a href="index.html">
+Tickets
+</a>
 
-        <a href="verify.html">
-          Verify
-        </a>
+<a href="verify.html">
+Verify
+</a>
 
-        <a href="admin.html">
-          Admin
-        </a>
+<a href="admin.html">
+Admin
+</a>
 
-      </nav>
+</nav>
 
-    </div>
+</div>
 
-  </header>
+</header>
 
 
 
-  <!-- MAIN -->
+<main>
 
-  <main>
-
-    <div class="container">
+<div class="container">
 
 
-      <!-- STAFF LOGIN -->
+<section class="hero">
 
-      <section
-        id="staffLogin"
-        class="card"
-      >
+<h1>
+STAFF VERIFICATION
+</h1>
 
-        <h1>
-          Staff Verification
-        </h1>
+<p>
+MEATOPIA • 30 SEPTEMBER 2026
+</p>
 
-        <p>
-          Authorized staff only.
-        </p>
+<p>
+MOSHUPA AOG
+</p>
 
-
-        <form id="staffLoginForm">
-
-
-          <div class="form-group">
-
-            <label for="staffEmail">
-              Staff Email
-            </label>
-
-
-            <input
-              type="email"
-              id="staffEmail"
-              placeholder="Staff email"
-              autocomplete="email"
-              required
-            >
-
-          </div>
+</section>
 
 
 
-          <div class="form-group">
+<section class="card">
 
-            <label for="staffPassword">
-              Password
-            </label>
+<h2>
+Verify Ticket
+</h2>
 
-
-            <input
-              type="password"
-              id="staffPassword"
-              placeholder="Staff password"
-              autocomplete="current-password"
-              required
-            >
-
-          </div>
+<p>
+Enter the unique Ticket ID below.
+</p>
 
 
-
-          <button
-            type="submit"
-            class="btn"
-            id="staffLoginButton"
-          >
-            Staff Login
-          </button>
+<form id="verifyForm">
 
 
-        </form>
+<div class="form-group">
+
+<label for="ticketId">
+
+Ticket ID
+
+</label>
 
 
-        <p
-          id="loginMessage"
-          class="error-message"
-        ></p>
+<input
+id="ticketId"
+type="text"
+placeholder="Example: MTP-ABCD1234"
+autocomplete="off"
+required
+>
 
-      </section>
-
-
-
-      <!-- VERIFICATION AREA -->
-
-      <section
-        id="verificationArea"
-        class="card hidden"
-      >
-
-        <h1>
-          Verify Ticket
-        </h1>
-
-        <p>
-          Enter the unique Ticket ID.
-        </p>
+</div>
 
 
-        <p id="loggedInStaff"></p>
+<button
+type="submit"
+class="btn"
+id="verifyButton"
+>
+
+Verify Ticket
+
+</button>
 
 
-        <form id="verifyForm">
+</form>
 
 
-          <div class="form-group">
-
-            <label for="ticketIdInput">
-              Ticket ID
-            </label>
-
-
-            <input
-              type="text"
-              id="ticketIdInput"
-              placeholder="Example: MTP-ABCD1234"
-              required
-            >
-
-          </div>
+<div
+id="result"
+style="margin-top:25px;"
+>
+</div>
 
 
-          <button
-            type="submit"
+</section>
+
+
+</div>
+
+</main>
+
+
+
+<footer>
+
+<div class="container">
+
+<p>
+© 2026 Meatopia
+</p>
+
+</div>
+
+</footer>
+
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
+<script>
+
+
+const SUPABASE_URL =
+"https://kqvekxywsyjuhjggwrpa.supabase.co";
+
+
+const SUPABASE_KEY =
+"sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+
+
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+
+const form =
+document.getElementById(
+"verifyForm"
+);
+
+
+const input =
+document.getElementById(
+"ticketId"
+);
+
+
+const result =
+document.getElementById(
+"result"
+);
+
+
+const button =
+document.getElementById(
+"verifyButton"
+);
+
+
+
+form.addEventListener(
+"submit",
+async function(event) {
+
+
+event.preventDefault();
+
+
+const ticketId =
+input.value
+.trim()
+.toUpperCase();
+
+
+if (!ticketId) {
+
+result.innerHTML =
+"<p>Please enter a Ticket ID.</p>";
+
+return;
+
+}
+
+
+button.disabled =
+true;
+
+button.textContent =
+"Checking...";
+
+
+result.innerHTML =
+"<p>Checking ticket...</p>";
+
+
+
+const {
+data,
+error
+} =
+await supabaseClient
+.from("Tickets.aog")
+.select("*")
+.eq(
+"ticket_id",
+ticketId
+)
+.maybeSingle();
+
+
+
+if (error) {
+
+console.error(error);
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+Verification Error
+</h2>
+
+<p>
+${escapeHtml(error.message)}
+</p>
+
+</div>
+
+`;
+
+
+button.disabled =
+false;
+
+button.textContent =
+"Verify Ticket";
+
+return;
+
+}
+
+
+
+if (!data) {
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+❌ TICKET NOT FOUND
+</h2>
+
+<p>
+No ticket with ID
+<strong>${escapeHtml(ticketId)}</strong>
+was found.
+</p>
+
+</div>
+
+`;
+
+
+button.disabled =
+false;
+
+button.textContent =
+"Verify Ticket";
+
+return;
+
+}
+
+
+
+const status =
+String(
+data.status
+)
+.toLowerCase();
+
+
+
+if (status === "pending") {
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+🟡 PAYMENT PENDING
+</h2>
+
+<p>
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(data.ticket_id)}</strong>
+</p>
+
+<p>
+Ticket Type:
+${escapeHtml(data.ticket_type)}
+</p>
+
+<p>
+This ticket has not been approved for entry.
+</p>
+
+</div>
+
+`;
+
+}
+
+
+
+else if (status === "valid") {
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+🟢 VALID TICKET
+</h2>
+
+<p>
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(data.ticket_id)}</strong>
+</p>
+
+<p>
+Ticket Type:
+${escapeHtml(data.ticket_type)}
+</p>
+
+<p>
+Price:
+P${escapeHtml(data.price)}
+</p>
+
+<p>
+Event:
+Meatopia
+</p>
+
+<p>
+30 September 2026
+</p>
+
+<p>
+Moshupa AOG
+</p>
+
+<button
+class="btn"
+id="useTicketButton"
+type="button"
+>
+MARK TICKET AS USED
+</button>
+
+</div>
+
+`;
+
+
+document
+.getElementById(
+"useTicketButton"
+)
+.addEventListener(
+"click",
+function() {
+
+markTicketUsed(
+data.ticket_id
+);
+
+});
+
+}
+
+
+
+else if (status === "used") {
+
+
+result.innerHTML = `
+
+<div class="card">
+
+<h2>
+🔴 TICKET ALREADY USED
+</h2>
+
+<p>
+<strong>${escapeHtml(data.holder_name)}</strong>
+</p>
+
+<p>
+Ticket ID:
+<strong>${escapeHtml(data.ticket_id)}</strong>
+</p>
+
+<p>
+This ticket has already been used.
+</p>
+
+<p>
+<strong
