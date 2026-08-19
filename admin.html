@@ -1,104 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Meatopia | Staff Admin</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 
+  <style>
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-user {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .success-message {
+      color: green;
+      margin-top: 12px;
+    }
+
+    .error-message {
+      color: #d00000;
+      margin-top: 12px;
+    }
+
+    .ticket-item {
+      padding: 15px;
+      margin-bottom: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .ticket-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
-
 
 <body>
 
-
   <!-- HEADER -->
-
   <header>
-
     <div class="container nav">
 
       <div class="logo">
         MEATOPIA
       </div>
 
-
       <nav class="nav-links">
-
-        <a href="index.html">
-          Tickets
-        </a>
-
-        <a href="verify.html">
-          Verify
-        </a>
-
-        <a href="admin.html">
-          Admin
-        </a>
-
+        <a href="index.html">Tickets</a>
+        <a href="verify.html">Verify</a>
+        <a href="admin.html">Admin</a>
       </nav>
 
     </div>
-
   </header>
 
 
-
   <!-- MAIN -->
-
   <main>
 
     <div class="container">
 
+      <!-- SUPABASE ADMIN LOGIN -->
+      <section id="adminLogin" class="card">
 
-      <!-- ADMIN LOGIN -->
-
-      <section
-        id="adminLogin"
-        class="card"
-      >
-
-        <h1>
-          Staff Admin
-        </h1>
+        <h1>Staff Admin</h1>
 
         <p>
           Authorized staff only.
         </p>
 
-
         <form id="adminLoginForm">
-
 
           <div class="form-group">
 
-            <label for="adminUsername">
-              Username
+            <label for="adminEmail">
+              Admin Email
             </label>
 
-
             <input
-              type="text"
-              id="adminUsername"
-              placeholder="Staff username"
-              autocomplete="username"
+              type="email"
+              id="adminEmail"
+              placeholder="Admin email"
+              autocomplete="email"
               required
             >
 
           </div>
-
 
 
           <div class="form-group">
@@ -107,11 +102,10 @@
               Password
             </label>
 
-
             <input
               type="password"
               id="adminPassword"
-              placeholder="Staff password"
+              placeholder="Admin password"
               autocomplete="current-password"
               required
             >
@@ -119,14 +113,13 @@
           </div>
 
 
-
           <button
             type="submit"
             class="btn"
+            id="loginButton"
           >
             Staff Login
           </button>
-
 
         </form>
 
@@ -139,14 +132,11 @@
       </section>
 
 
-
       <!-- ADMIN DASHBOARD -->
-
       <section
         id="adminDashboard"
         class="hidden"
       >
-
 
         <section class="hero">
 
@@ -158,27 +148,26 @@
             Meatopia Ticket Management
           </p>
 
+          <p
+            id="loggedInUser"
+            class="auth-user"
+          ></p>
+
         </section>
 
 
-
         <!-- STATISTICS -->
-
         <section class="card">
 
           <h2>
             Ticket Statistics
           </h2>
 
-
           <div class="ticket-stats">
-
 
             <div class="stat">
 
-              <strong
-                id="totalTickets"
-              >
+              <strong id="totalTickets">
                 0
               </strong>
 
@@ -191,9 +180,7 @@
 
             <div class="stat">
 
-              <strong
-                id="validTickets"
-              >
+              <strong id="validTickets">
                 0
               </strong>
 
@@ -206,9 +193,7 @@
 
             <div class="stat">
 
-              <strong
-                id="usedTickets"
-              >
+              <strong id="usedTickets">
                 0
               </strong>
 
@@ -218,28 +203,22 @@
 
             </div>
 
-
           </div>
 
         </section>
 
 
-
         <!-- TICKET LIST -->
-
         <section class="card">
 
           <h2>
             Tickets
           </h2>
 
-
-          <div
-            id="ticketList"
-          >
+          <div id="ticketList">
 
             <p>
-              No tickets available.
+              Loading tickets...
             </p>
 
           </div>
@@ -247,32 +226,27 @@
         </section>
 
 
-
         <!-- LOGOUT -->
-
         <section class="card">
 
           <button
             id="adminLogout"
             class="btn"
+            type="button"
           >
             Logout
           </button>
 
         </section>
 
-
       </section>
-
 
     </div>
 
   </main>
 
 
-
   <!-- FOOTER -->
-
   <footer>
 
     <div class="container">
@@ -286,40 +260,250 @@
   </footer>
 
 
-
+  <!-- EXISTING WEBSITE SCRIPT -->
   <script src="script.js"></script>
-<!-- Supabase Authentication -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "https://kqvekxywsyjuhjggwrpa.supabase.co";
-const SUPABASE_KEY = "sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-// Check whether the admin is logged in
-async function checkAdminLogin() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
 
-    if (!session) {
-        window.location.href = "index.html";
-        return;
+  <!-- AUTHENTICATION -->
+  <script>
+
+    const SUPABASE_URL =
+      "https://kqvekxywsyjuhjggwrpa.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_-j0nUXgSet2ihzJimLkSZg_hHimaaPm";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    const loginForm =
+      document.getElementById("adminLoginForm");
+
+    const loginSection =
+      document.getElementById("adminLogin");
+
+    const dashboard =
+      document.getElementById("adminDashboard");
+
+    const loginMessage =
+      document.getElementById("adminLoginMessage");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const logoutButton =
+      document.getElementById("adminLogout");
+
+    const loggedInUser =
+      document.getElementById("loggedInUser");
+
+
+    // --------------------------------
+    // CHECK LOGIN
+    // --------------------------------
+
+    async function checkAdminLogin() {
+
+      const {
+        data: {
+          session
+        }
+      } = await supabaseClient.auth.getSession();
+
+
+      if (session) {
+
+        showDashboard(session);
+
+      } else {
+
+        showLogin();
+
+      }
+
     }
 
-    console.log("Admin logged in:", session.user.email);
-}
 
-checkAdminLogin();
+    // --------------------------------
+    // SHOW LOGIN
+    // --------------------------------
 
-// Logout function
-async function logoutAdmin() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "index.html";
-}
-</script>
+    function showLogin() {
+
+      loginSection.classList.remove("hidden");
+
+      dashboard.classList.add("hidden");
+
+    }
+
+
+    // --------------------------------
+    // SHOW DASHBOARD
+    // --------------------------------
+
+    function showDashboard(session) {
+
+      loginSection.classList.add("hidden");
+
+      dashboard.classList.remove("hidden");
+
+
+      if (
+        session &&
+        session.user &&
+        session.user.email
+      ) {
+
+        loggedInUser.textContent =
+          "Logged in as: " +
+          session.user.email;
+
+      }
+
+    }
+
+
+    // --------------------------------
+    // LOGIN
+    // --------------------------------
+
+    loginForm.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+          document
+            .getElementById("adminEmail")
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById("adminPassword")
+            .value;
+
+
+        loginMessage.textContent =
+          "Signing in...";
+
+
+        loginMessage.className =
+          "success-message";
+
+
+        loginButton.disabled = true;
+
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+
+        if (error) {
+
+          loginMessage.textContent =
+            "Login failed: " +
+            error.message;
+
+          loginMessage.className =
+            "error-message";
+
+          loginButton.disabled = false;
+
+          return;
+
+        }
+
+
+        loginMessage.textContent =
+          "Login successful.";
+
+
+        showDashboard(data.session);
+
+
+        loginButton.disabled = false;
+
+      }
+    );
+
+
+    // --------------------------------
+    // LOGOUT
+    // --------------------------------
+
+    logoutButton.addEventListener(
+      "click",
+      async function() {
+
+        await supabaseClient.auth.signOut();
+
+        showLogin();
+
+        document
+          .getElementById("adminEmail")
+          .value = "";
+
+        document
+          .getElementById("adminPassword")
+          .value = "";
+
+        loginMessage.textContent =
+          "You have been logged out.";
+
+        loginMessage.className =
+          "success-message";
+
+      }
+    );
+
+
+    // --------------------------------
+    // AUTH STATE LISTENER
+    // --------------------------------
+
+    supabaseClient.auth.onAuthStateChange(
+      function(event, session) {
+
+        if (session) {
+
+          showDashboard(session);
+
+        } else {
+
+          showLogin();
+
+        }
+
+      }
+    );
+
+
+    // --------------------------------
+    // START
+    // --------------------------------
+
+    checkAdminLogin();
+
+  </script>
+
 </body>
-
 </html>
